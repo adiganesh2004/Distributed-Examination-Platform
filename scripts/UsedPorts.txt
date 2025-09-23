@@ -1,2 +1,6 @@
-Started CockroachDB on port 26300 in region india (HTTP port: 32484, join: )
-Started CockroachDB on port 26301 in region usa (HTTP port: 34066, join: --join=localhost:26300)
+Started CockroachDB on port 26257 in region india (HTTP port: 35665, join: )
+Started CockroachDB on port 26258 in region usa (HTTP port: 31729, join: --join=localhost:26257)
+Started AUTH-SERVICE instance 1 on port 31972 in india
+Started GATEWAY on port 31404 in india
+Started AUTH-SERVICE instance 1 on port 36140 in usa
+Started GATEWAY on port 32065 in usa

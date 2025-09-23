@@ -35,6 +35,7 @@ if [[ "$PORT" -eq "$JOIN_PORT" ]]; then
     --insecure \
     --listen-addr="localhost:$PORT" \
     --http-addr="localhost:$HTTP_PORT" \
+    --cache=.05 --max-sql-memory=.05 \
     --store="$DATA_DIR" \
     --locality="region=$REGION" \
     --background
@@ -45,6 +46,7 @@ else
         --http-addr="localhost:$HTTP_PORT" \
         --store="$DATA_DIR" \
         --locality="region=$REGION" \
+        --cache=.05 --max-sql-memory=.05 \
         $JOIN_FLAG \
         --background
 fi
