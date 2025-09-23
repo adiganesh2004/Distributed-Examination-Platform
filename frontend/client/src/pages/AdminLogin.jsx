@@ -31,14 +31,14 @@ const AdminLogin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md p-8 space-y-6 bg-white shadow-xl">
         <div className="text-center space-y-2">
-          <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-            <Shield className="w-8 h-8 text-red-600" />
+          <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+            <Shield className="w-8 h-8 text-blue-600" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Admin Login</h1>
-          <p className="text-gray-600">Access administrative dashboard</p>
+          <p className="text-gray-600">Access your admin dashboard</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -66,7 +66,7 @@ const AdminLogin = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter admin password"
+              placeholder="Enter your password"
               required
               className="w-full"
             />
@@ -79,18 +79,19 @@ const AdminLogin = () => {
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-red-700">
-            {loading ? "Signing in..." : "Admin Sign In"}
+          <Button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700">
+            {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
 
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Are you a candidate?{" "}
-            <Link to="/candidate-login" className="text-red-600 hover:text-red-700 font-medium">
-              Candidate Login
-            </Link>
+              Don’t have an admin account?{" "}
+              <Link to="/admin-signup" className="text-blue-600 hover:text-blue-700 font-medium">
+                Sign Up
+              </Link>
           </p>
+
         </div>
       </Card>
     </div>

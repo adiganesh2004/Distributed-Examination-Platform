@@ -88,9 +88,9 @@ const CandidateLogin = () => {
 
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Are you an administrator?{" "}
-            <Link to="/admin-login" className="text-blue-600 hover:text-blue-700 font-medium">
-              Admin Login
+            Don’t have an account?{" "}
+            <Link to="/candidate-signup" className="text-blue-600 hover:text-blue-700 font-medium">
+              Sign up
             </Link>
           </p>
         </div>
