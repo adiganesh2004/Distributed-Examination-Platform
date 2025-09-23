@@ -29,14 +29,23 @@ get_free_port() {
 
 HTTP_PORT=$(get_free_port)
 
-# Start the node
-cockroach start \
+if [[ "$PORT" -eq "$JOIN_PORT" ]]; then
+    JOIN_FLAG=""
+    cockroach start-single-node \
     --insecure \
     --listen-addr="localhost:$PORT" \
     --http-addr="localhost:$HTTP_PORT" \
     --store="$DATA_DIR" \
     --locality="region=$REGION" \
-    $JOIN_FLAG \
     --background
-
+else
+    cockroach start \
+        --insecure \
+        --listen-addr="localhost:$PORT" \
+        --http-addr="localhost:$HTTP_PORT" \
+        --store="$DATA_DIR" \
+        --locality="region=$REGION" \
+        $JOIN_FLAG \
+        --background
+fi
 echo "Started CockroachDB on port $PORT in region $REGION (HTTP port: $HTTP_PORT, join: $JOIN_FLAG)" >> UsedPorts.txt

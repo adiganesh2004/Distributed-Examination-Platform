@@ -1,18 +1,2 @@
-Started CockroachDB on port 26257 in region india (HTTP port: 39523, join: --join=localhost:26257)
-Started CockroachDB on port 26258 in region usa (HTTP port: 34180, join: --join=localhost:26257)
-Started CockroachDB on port 26259 in region europe (HTTP port: 34687, join: --join=localhost:26257)
-Started RESULTS-SERVICE instance 1 on port 33871 in india
-Started RESULTS-SERVICE instance 2 on port 34865 in india
-Started PROCT-SERVICE instance 1 on port 33755 in india
-Started PROCT-SERVICE instance 2 on port 38277 in india
-Started TEST-EVAL-SERVICE instance 1 on port 31954 in india
-Started AUTH-SERVICE instance 1 on port 39564 in india
-Started TEST-CREATE-SERVICE instance 1 on port 34614 in india
-Started RESULTS-SERVICE instance 1 on port 32887 in india
-Started RESULTS-SERVICE instance 2 on port 32070 in india
-Started PROCT-SERVICE instance 1 on port 36874 in india
-Started PROCT-SERVICE instance 2 on port 31301 in india
-Started TEST-EVAL-SERVICE instance 1 on port 35700 in india
-Started AUTH-SERVICE instance 1 on port 34598 in india
-Started TEST-CREATE-SERVICE instance 1 on port 32935 in india
-Started GATEWAY on port 36629 in india
+Started CockroachDB on port 26300 in region india (HTTP port: 32484, join: )
+Started CockroachDB on port 26301 in region usa (HTTP port: 34066, join: --join=localhost:26300)
