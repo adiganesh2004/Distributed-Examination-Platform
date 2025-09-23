@@ -7,34 +7,34 @@ USED_PORTS_FILE="$(pwd)/UsedPorts.txt"
 
 declare -A SERVICES_DIRS=(
   [AUTH-SERVICE]="../services/authentication-service"
-  [PROCT-SERVICE]="../services/proctoring-service"
-  [RESULTS-SERVICE]="../services/results-service"
-  [TEST-CREATE-SERVICE]="../services/test-creation-service"
-  [TEST-EVAL-SERVICE]="../services/test-evaluation-service"
+  # [PROCT-SERVICE]="../services/proctoring-service"
+  # [RESULTS-SERVICE]="../services/results-service"
+  # [TEST-CREATE-SERVICE]="../services/test-creation-service"
+  # [TEST-EVAL-SERVICE]="../services/test-evaluation-service"
 )
 
 declare -A SERVICE_COUNTS=(
   [AUTH-SERVICE]=1
-  [PROCT-SERVICE]=2
-  [RESULTS-SERVICE]=2
-  [TEST-CREATE-SERVICE]=1
-  [TEST-EVAL-SERVICE]=1
+  # [PROCT-SERVICE]=2
+  # [RESULTS-SERVICE]=2
+  # [TEST-CREATE-SERVICE]=1
+  # [TEST-EVAL-SERVICE]=1
 )
 
 declare -A SERVICE_ENV_NAMES=(
   [AUTH-SERVICE]="AUTH_SERVICE_URIS"
-  [PROCT-SERVICE]="PROCT_SERVICE_URIS"
-  [RESULTS-SERVICE]="RESULTS_SERVICE_URIS"
-  [TEST-CREATE-SERVICE]="TEST_CREATE_SERVICE_URIS"
-  [TEST-EVAL-SERVICE]="TEST_EVAL_SERVICE_URIS"
+  # [PROCT-SERVICE]="PROCT_SERVICE_URIS"
+  # [RESULTS-SERVICE]="RESULTS_SERVICE_URIS"
+  # [TEST-CREATE-SERVICE]="TEST_CREATE_SERVICE_URIS"
+  # [TEST-EVAL-SERVICE]="TEST_EVAL_SERVICE_URIS"
 )
 
 declare -A SERVICE_JARS=(
   [AUTH-SERVICE]="target/authentication-service-1.0.0.jar"
-  [PROCT-SERVICE]="target/proctoring-service-1.0.0.jar"
-  [RESULTS-SERVICE]="target/results-service-1.0.0.jar"
-  [TEST-CREATE-SERVICE]="target/test-creation-service-1.0.0.jar"
-  [TEST-EVAL-SERVICE]="target/test-evaluation-service-1.0.0.jar"
+  # [PROCT-SERVICE]="target/proctoring-service-1.0.0.jar"
+  # [RESULTS-SERVICE]="target/results-service-1.0.0.jar"
+  # [TEST-CREATE-SERVICE]="target/test-creation-service-1.0.0.jar"
+  # [TEST-EVAL-SERVICE]="target/test-evaluation-service-1.0.0.jar"
 )
 
 GATEWAY_DIR="../services/gateway-service"
