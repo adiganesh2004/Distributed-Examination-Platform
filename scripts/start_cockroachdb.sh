@@ -13,7 +13,7 @@ if [[ -z "$PORT" || -z "$REGION" ]]; then
     exit 1
 fi
 
-DATA_DIR="../cockroach-data/$REGION-$PORT"
+DATA_DIR="../cockroach-data/$REGION"
 mkdir -p "$DATA_DIR"
 
 # Determine join parameter
