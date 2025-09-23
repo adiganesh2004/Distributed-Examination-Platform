@@ -90,6 +90,8 @@ for SERVICE in "${!SERVICE_URIS[@]}"; do
     ENV_ARGS+=("$VAR_NAME=${SERVICE_URIS[$SERVICE]}")
 done
 
+echo "${ENV_ARGS[@]}" >> "$USED_PORTS_FILE"
+
 env DATASOURCE_PORT=$DATASOURCE_PORT "${ENV_ARGS[@]}" java -jar "$GATEWAY_JAR" --server.port=$GATEWAY_PORT &
 echo "Started GATEWAY on port $GATEWAY_PORT in $REGION" >> "$USED_PORTS_FILE"
 cd "$CURRENT_DIR"

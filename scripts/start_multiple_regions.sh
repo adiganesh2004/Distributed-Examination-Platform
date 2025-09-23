@@ -16,8 +16,8 @@ get_free_port() {
 
 MAIN_DB_PORT=$(get_free_port)
 
-# NODES=( [${MAIN_DB_PORT}]="india")
-NODES=([${MAIN_DB_PORT}]="india" [$(get_free_port)]="usa")
+NODES=( [${MAIN_DB_PORT}]="india")
+# NODES=([${MAIN_DB_PORT}]="india" [$(get_free_port)]="usa")
 # NODES=([${MAIN_DB_PORT}]="india" [$(get_free_port)]="usa" [$(get_free_port)]="europe")
 
 # ./compile_services.sh

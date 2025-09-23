@@ -1,6 +1,4 @@
-Started CockroachDB on port 35637 in region india (HTTP port: 39835, join: )
-Started CockroachDB on port 38773 in region usa (HTTP port: 39790, join: --join=localhost:35637)
-Started AUTH-SERVICE instance 1 on port 30004 in india
-Started GATEWAY on port 33870 in india
-Started AUTH-SERVICE instance 1 on port 33550 in usa
-Started GATEWAY on port 35306 in usa
+Started CockroachDB on port 38299 in region india (HTTP port: 31609, join: )
+Started AUTH-SERVICE instance 1 on port 30509 in india
+RESULTS_SERVICE_URIS= PROCT_SERVICE_URIS= TEST_EVAL_SERVICE_URIS= AUTH_SERVICE_URIS=http://localhost:30509 TEST_CREATE_SERVICE_URIS=
+Started GATEWAY on port 37194 in india
