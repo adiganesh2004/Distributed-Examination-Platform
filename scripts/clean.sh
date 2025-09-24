@@ -16,14 +16,27 @@ clean_logs() {
   fi
 }
 
-if [ -z "$ACTION" ] || [ "$ACTION" = "both" ]; then
+clean_react() {
+  echo "Stopping active React/Vite apps..."
+  pkill -f "node.*vite" && echo "Vite dev servers stopped." || echo "No Vite dev servers found."
+}
+
+# Stop CockroachDB safely
+pkill cockroach
+
+if [ -z "$ACTION" ] || [ "$ACTION" = "all" ]; then
   clean_java
   clean_logs
+  clean_react
 elif [ "$ACTION" = "java" ]; then
   clean_java
 elif [ "$ACTION" = "logs" ]; then
   clean_logs
+elif [ "$ACTION" = "react" ]; then
+  clean_react
 else
-  echo "Invalid option. Use: java | logs | both"
+  echo "Invalid option. Use: java | logs | react | both"
   exit 1
 fi
+
+exit 0
