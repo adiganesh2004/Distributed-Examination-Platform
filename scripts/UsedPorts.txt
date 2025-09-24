@@ -1,4 +1,5 @@
-Started CockroachDB on port 38299 in region india (HTTP port: 31609, join: )
-Started AUTH-SERVICE instance 1 on port 30509 in india
-RESULTS_SERVICE_URIS= PROCT_SERVICE_URIS= TEST_EVAL_SERVICE_URIS= AUTH_SERVICE_URIS=http://localhost:30509 TEST_CREATE_SERVICE_URIS=
-Started GATEWAY on port 37194 in india
+Started CockroachDB on port 36895 in region india (HTTP port: 34050, join: )
+Started EUREKA on port 36594 in india
+Started AUTH-SERVICE instance 1 on port 35288 in india
+Started GATEWAY-SERVICE instance 1 on port 35896 in india
+Started GATEWAY on port 35896 in india

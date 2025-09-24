@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react"
 
+const BACKEND_URL = import.meta.env.VITE_API_URL;
 const AuthContext = createContext()
 
 export const useAuth = () => {
@@ -28,13 +29,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password, userType) => {
     try {
       // Simulate API call to backend
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(`${BACKEND_URL}/auth/${userType}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password, userType }),
-      })
+      },)
 
       if (response.ok) {
         const userData = await response.json()

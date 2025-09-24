@@ -5,6 +5,7 @@ import { Button } from "../components/ui/Button.jsx"
 import { Input } from "../components/ui/Input.jsx"
 import { Card } from "../components/ui/Card.jsx"
 import { User, Mail, Lock, AlertCircle } from "lucide-react"
+const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 const Signup = ({ role = "candidate" }) => {
   const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" })
@@ -32,7 +33,7 @@ const Signup = ({ role = "candidate" }) => {
 
     setLoading(true)
     try {
-      const res = await fetch(`/api/auth/${role}-signup`, {
+      const res = await fetch(`${BACKEND_URL}/auth/${role}/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),

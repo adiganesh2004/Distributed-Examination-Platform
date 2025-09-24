@@ -4,6 +4,9 @@ CURRENT_DIR="$(pwd)"
 DATASOURCE_PORT=$1
 REGION=$2
 USED_PORTS_FILE="$(pwd)/UsedPorts.txt"
+LOGS_DIR="$(pwd)/logs"
+
+mkdir -p "$LOGS_DIR"
 
 declare -A SERVICES_DIRS=(
   [AUTH-SERVICE]="../services/authentication-service"
@@ -11,22 +14,16 @@ declare -A SERVICES_DIRS=(
   [RESULTS-SERVICE]="../services/results-service"
   [TEST-CREATE-SERVICE]="../services/test-creation-service"
   [TEST-EVAL-SERVICE]="../services/test-evaluation-service"
+  [GATEWAY-SERVICE]="../services/gateway-service"
 )
 
 declare -A SERVICE_COUNTS=(
+  [GATEWAY-SERVICE]=1
   [AUTH-SERVICE]=1
   [PROCT-SERVICE]=0
   [RESULTS-SERVICE]=0
   [TEST-CREATE-SERVICE]=0
   [TEST-EVAL-SERVICE]=0
-)
-
-declare -A SERVICE_ENV_NAMES=(
-  [AUTH-SERVICE]="AUTH_SERVICE_URIS"
-  [PROCT-SERVICE]="PROCT_SERVICE_URIS"
-  [RESULTS-SERVICE]="RESULTS_SERVICE_URIS"
-  [TEST-CREATE-SERVICE]="TEST_CREATE_SERVICE_URIS"
-  [TEST-EVAL-SERVICE]="TEST_EVAL_SERVICE_URIS"
 )
 
 declare -A SERVICE_JARS=(
@@ -35,11 +32,8 @@ declare -A SERVICE_JARS=(
   [RESULTS-SERVICE]="target/results-service-1.0.0.jar"
   [TEST-CREATE-SERVICE]="target/test-creation-service-1.0.0.jar"
   [TEST-EVAL-SERVICE]="target/test-evaluation-service-1.0.0.jar"
+  [GATEWAY-SERVICE]="target/gateway-service-1.0.0.jar"
 )
-
-GATEWAY_DIR="../services/gateway-service"
-GATEWAY_JAR="target/gateway-service-1.0.0.jar"
-
 
 get_free_port() {
   while true; do
@@ -48,51 +42,40 @@ get_free_port() {
   done
 }
 
-declare -A SERVICE_URIS  
+EUREKA_DIR="../services/eureka_server"
+EUREKA_JAR="target/eureka-server-1.0.0.jar"
+EUREKA_PORT=$(get_free_port)
+GATEWAY_PORT=0
+EUREKA_LOG="$LOGS_DIR/eureka-server-$EUREKA_PORT.log"
+cd "$EUREKA_DIR" || { echo "Gateway directory $EUREKA_DIR not found!"; exit 1; }
+
+env DATASOURCE_PORT=$DATASOURCE_PORT EUREKA_PORT=$EUREKA_PORT java -jar "$EUREKA_JAR" --server.port=$EUREKA_PORT 1>"$EUREKA_LOG" 2>&1 &
+echo "Started EUREKA on port $EUREKA_PORT in $REGION" >> "$USED_PORTS_FILE"
+cd "$CURRENT_DIR"
+
 
 for SERVICE in "${!SERVICES_DIRS[@]}"; do
     DIR=${SERVICES_DIRS[$SERVICE]}
     COUNT=${SERVICE_COUNTS[$SERVICE]}
-    ENV_VAR=${SERVICE_ENV_NAMES[$SERVICE]}
     JAR_FILE=${SERVICE_JARS[$SERVICE]}
-    URIS=""
 
     for ((i=1; i<=COUNT; i++)); do
         PORT=$(get_free_port)
         URI="http://localhost:$PORT"
-        URIS+="$URI,"
+        SERVICE_LOG="$LOGS_DIR/$SERVICE-$PORT.log"
 
         cd "$DIR" || { echo "Directory $DIR not found!"; exit 1; }
+        if [[ "$SERVICE" == "GATEWAY-SERVICE" ]]; then
+          GATEWAY_PORT=$PORT
+        fi
 
-        env DATASOURCE_PORT=$DATASOURCE_PORT java -jar "$JAR_FILE" --server.port=$PORT &
+        env DATASOURCE_PORT=$DATASOURCE_PORT EUREKA_PORT=$EUREKA_PORT java -jar "$JAR_FILE" --server.port=$PORT 1>"$SERVICE_LOG" 2>&1 &
         echo "Started $SERVICE instance $i on port $PORT in $REGION" >> "$USED_PORTS_FILE"
         cd "$CURRENT_DIR"
+
     done
-
-    URIS=${URIS%,}
-    export ${ENV_VAR}="$URIS"
-
-    SERVICE_URIS[$SERVICE]=$URIS
 done
 
-for SERVICE in "${!SERVICE_URIS[@]}"; do
-    ENV_VAR=${SERVICE_ENV_NAMES[$SERVICE]}
-    echo "$SERVICE ($ENV_VAR): ${SERVICE_URIS[$SERVICE]}"
-done
-
-GATEWAY_PORT=$(get_free_port)
-
-cd "$GATEWAY_DIR" || { echo "Gateway directory $GATEWAY_DIR not found!"; exit 1; }
-
-ENV_ARGS=()
-for SERVICE in "${!SERVICE_URIS[@]}"; do
-    VAR_NAME=${SERVICE_ENV_NAMES[$SERVICE]}
-    ENV_ARGS+=("$VAR_NAME=${SERVICE_URIS[$SERVICE]}")
-done
-
-echo "${ENV_ARGS[@]}" >> "$USED_PORTS_FILE"
-
-env DATASOURCE_PORT=$DATASOURCE_PORT "${ENV_ARGS[@]}" java -jar "$GATEWAY_JAR" --server.port=$GATEWAY_PORT &
 echo "Started GATEWAY on port $GATEWAY_PORT in $REGION" >> "$USED_PORTS_FILE"
 cd "$CURRENT_DIR"
 

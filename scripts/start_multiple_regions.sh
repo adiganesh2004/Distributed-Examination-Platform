@@ -3,7 +3,7 @@
 > UsedPorts.txt
 
 CURRENT_DIR="$(pwd)"
-FRONTEND_DIR="../frontend/client"
+
 declare -A NODES
 
 # Function to find a free TCP port
@@ -35,10 +35,8 @@ echo "DB ScHEMA DONE"
 for PORT in "${!NODES[@]}"; do
     REGION=${NODES[$PORT]}
     cd "$CURRENT_DIR"
-    ./start_region_instances.sh "$PORT" "$REGION"
-    # GATEWAY_PORT=$(./start_region_instances.sh "$PORT" "$REGION")
-    cd "$FRONTEND_DIR"
-    # npm run dev with GATEWAY_PORT
+    GATEWAY_PORT=$(./start_region_instances.sh "$PORT" "$REGION")
+    ./start_react_apps.sh "$GATEWAY_PORT" "$REGION"
     echo "Started region $REGION"
 done
 
