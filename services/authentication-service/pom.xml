@@ -84,9 +84,8 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
-    </dependencies>
   <!-- JDBC (no JPA) -->
-  <dependency>
+    <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-jdbc</artifactId>
   </dependency>
