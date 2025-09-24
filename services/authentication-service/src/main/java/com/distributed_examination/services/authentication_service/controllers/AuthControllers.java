@@ -2,15 +2,20 @@ package com.distributed_examination.services.authentication_service.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Value;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthControllers {
 
+    @Value("${server.port}")
+        private String port;
+
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest req) {
         // handle login
-        return ResponseEntity.ok("Logged in!");
+        String responseMessage = String.format("Logged in! This service is running on port %s.", port);
+        return ResponseEntity.ok(responseMessage);
     }
 
     @PostMapping("/register")
