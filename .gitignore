@@ -2,3 +2,4 @@ cockroach-data/
 .vscode
 .project
 scripts/logs/**
+scripts/UsedPorts.txt
