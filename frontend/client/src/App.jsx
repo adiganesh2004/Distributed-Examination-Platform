@@ -7,18 +7,22 @@ import Home from "./pages/Home.jsx"
 import Signup from "./pages/Signup.jsx"
 import LandingPage from "./pages/LandingPage.jsx"
 import Navbar from "./components/Navbar.jsx"
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx"
+import AddQuestions from "./pages/AddQuestions.jsx"
+import CreateTest from "./pages/CreateTest.jsx"
 
 function App() {
   return (
     <div className="min-h-screen bg-background">
       <AuthProvider>
+        
+      <Navbar/>
         <Routes>
           {/* Routes with navbar */}
           <Route
             path="/"
             element={
               <>
-                <Navbar />
                 <LandingPage />
               </>
             }
@@ -27,7 +31,6 @@ function App() {
             path="/candidate-login"
             element={
               <>
-                <Navbar />
                 <CandidateLogin />
               </>
             }
@@ -36,7 +39,6 @@ function App() {
             path="/admin-login"
             element={
               <>
-                <Navbar />
                 <AdminLogin />
               </>
             }
@@ -45,7 +47,6 @@ function App() {
             path="/candidate-signup"
             element={
               <>
-                <Navbar />
                 <Signup role="candidate" />
               </>
             }
@@ -54,7 +55,6 @@ function App() {
             path="/admin-signup"
             element={
               <>
-                <Navbar />
                 <Signup role="admin" />
               </>
             }
@@ -62,9 +62,35 @@ function App() {
           <Route
             path="/home"
             element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
+              
+              // <ProtectedRoute>
+              //   <Home />
+              // </ProtectedRoute>
+              <>
+              <Home />
+              </>
+            }
+          />
+          <Route
+            path="/addquestions"
+            element={
+              // <ProtectedAdminRoute>
+              //   <AddQuestions/>
+              // </ProtectedAdminRoute>
+              <>
+              <AddQuestions/>
+              </>
+            }
+          />
+          <Route
+            path="/createtest"
+            element={
+              // <ProtectedAdminRoute>
+              // <CreateTest/>
+              // </ProtectedAdminRoute>
+              <>
+              <CreateTest/>
+              </>
             }
           />
         </Routes>

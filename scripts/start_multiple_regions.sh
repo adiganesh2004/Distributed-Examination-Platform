@@ -15,12 +15,19 @@ get_free_port() {
 }
 
 MAIN_DB_PORT=$(get_free_port)
+NUMBER="$1"
 
-NODES=( [${MAIN_DB_PORT}]="india")
-# NODES=([${MAIN_DB_PORT}]="india" [$(get_free_port)]="usa")
-# NODES=([${MAIN_DB_PORT}]="india" [$(get_free_port)]="usa" [$(get_free_port)]="europe")
+declare -A NODES
 
-# ./compile_services.sh
+if [[ "$NUMBER" == "1" ]]; then
+    NODES=([${MAIN_DB_PORT}]="india")
+elif [[ "$NUMBER" == "2" ]]; then
+    NODES=([${MAIN_DB_PORT}]="india" [$(get_free_port)]="usa")
+elif [[ "$NUMBER" == "3" ]]; then
+    NODES=([${MAIN_DB_PORT}]="india" [$(get_free_port)]="usa" [$(get_free_port)]="europe")
+else
+    echo "Invalid NUMBER"
+fi
 
 for PORT in "${!NODES[@]}"; do
     REGION=${NODES[$PORT]}
