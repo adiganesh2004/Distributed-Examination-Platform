@@ -10,6 +10,7 @@ declare -A SERVICES_DIRS=(
   [TEST-EVAL-SERVICE]="../services/test-evaluation-service"
   [GATEWAY_DIR]="../services/gateway-service"
   [EUREKA_DIR]="../services/eureka_server"
+  [QUESTION-CREATION-SERVICE]="../services/question-creation-service"
 )
 
 declare -A SERVICE_JARS=(
@@ -20,6 +21,7 @@ declare -A SERVICE_JARS=(
   [TEST-EVAL-SERVICE]="test-evaluation-service-1.0.0.jar"
   [GATEWAY_DIR]="gateway-service-1.0.0.jar"
   [EUREKA_DIR]="eureka-server-1.0.0.jar"
+  [QUESTION-CREATION-SERVICE]="question-creation-service-1.0.0.jar"
 )
 
 for SERVICE in "${!SERVICES_DIRS[@]}"; do
@@ -30,5 +32,4 @@ for SERVICE in "${!SERVICES_DIRS[@]}"; do
         mvn clean package -Dmaven.test.skip=true || { echo "Build failed for $SERVICE"; exit 1; }
         mv target/*.jar "target/$JAR_FILE"
     )
-
 done

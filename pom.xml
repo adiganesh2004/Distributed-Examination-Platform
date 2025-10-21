@@ -25,6 +25,7 @@
     <module>services/test-evaluation-service</module>
     <module>services/results-service</module>
     <module>services/proctoring-service</module>
+    <module>services/question-creation-service</module>
   </modules>
 
   <dependencyManagement>
