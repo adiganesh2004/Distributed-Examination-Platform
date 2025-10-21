@@ -95,13 +95,7 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-security</artifactId>
   </dependency> -->
-
-  <!-- PostgreSQL driver (works with CockroachDB) -->
-  <dependency>
-    <groupId>org.postgresql</groupId>
-    <artifactId>postgresql</artifactId>
-  </dependency>
-
+  
   <!-- Validation for DTOs (@Valid) -->
   <dependency>
     <groupId>org.springframework.boot</groupId>
