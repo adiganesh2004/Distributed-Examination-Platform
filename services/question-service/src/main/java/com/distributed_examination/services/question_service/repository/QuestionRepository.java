@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Arrays;
+
 
 @Repository
 public class QuestionRepository {
@@ -21,29 +23,17 @@ public class QuestionRepository {
     }
 
     private final RowMapper<Question> rowMapper = (rs, rowNum) -> {
-        List<String> options = null;
-        try {
-            options = objectMapper.readValue(
-                rs.getString("options"),
-                new com.fasterxml.jackson.core.type.TypeReference<List<String>>() {}
-            );
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return new Question(
-            rs.getInt("question_id"),
-            rs.getString("question"),
-            options,
-            rs.getInt("answer_index")
-        );
+        Question q = new Question();
+        q.setQuestion(rs.getString("question"));
+        String[] optionsArray = (String[]) rs.getArray("options").getArray();
+        q.setOptions(Arrays.asList(optionsArray));
+        q.setAnswerIndex(rs.getInt("answer_index"));
+        return q;
     };
 
 
-    public List<Question> findAll() {
-        return jdbcTemplate.query("SELECT * FROM questions", rowMapper);
+    public List<Question> findAll(String admin_id) {
+        return jdbcTemplate.query("SELECT * FROM questions where admin_id = ?", new Object[]{admin_id}, rowMapper);
     }
 
     public Question findById(int id) {

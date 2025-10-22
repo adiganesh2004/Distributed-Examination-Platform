@@ -19,9 +19,9 @@ public class QuestionController {
         this.service = service;
     }
 
-    @GetMapping
-    public List<Question> getAll(@AuthenticationPrincipal CustomUserDetails user) {
-        return service.getAllQuestions();
+    @GetMapping("/admin/getall")
+    public List<Question> getAllFromUser(@AuthenticationPrincipal CustomUserDetails user) {
+        return service.getAllQuestionsFromUser(user.getId());
     }
 
     @GetMapping("/{id}")

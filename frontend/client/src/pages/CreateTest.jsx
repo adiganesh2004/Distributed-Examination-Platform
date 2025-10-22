@@ -21,12 +21,19 @@ const CreateTest = () => {
       try {
         setLoading(true)
         const token = localStorage.getItem("token")
-        const res = await fetch(`${BACKEND_URL}/questions-with-answers`, {
+        const res = await fetch(`${BACKEND_URL}/questions/admin/getall`, {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
         })
-        // setQuestions(res.data)
+
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}))
+          throw new Error(body.message || "Fetching failed")
+        }
+        const questionsList = await res.json();
+        setQuestions(questionsList);
+
       } catch (err) {
         console.error("Failed to fetch questions:", err)
         
@@ -34,14 +41,7 @@ const CreateTest = () => {
         setLoading(false)
       }
     }
-    // fetchQuestions()
-    setQuestions([
-      { id: 1, question: "What is 2 + 2?", options: ["3", "4", "5", "6"], answerIndex: 1 },
-      { id: 2, question: "Capital of France?", options: ["Berlin", "Madrid", "Paris", "Rome"], answerIndex: 2 },
-      { id: 3, question: "Which language is React written in?", options: ["Python", "JavaScript", "Java", "C++"], answerIndex: 1 },
-      { id: 4, question: "What is the boiling point of water?", options: ["90°C", "100°C", "120°C", "80°C"], answerIndex: 1 },
-      { id: 5, question: "Largest planet in the solar system?", options: ["Earth", "Mars", "Jupiter", "Saturn"], answerIndex: 2 }
-    ])
+    fetchQuestions()
   }, [])
 
   const addQuestion = () => setSelectedQuestions([...selectedQuestions, null])

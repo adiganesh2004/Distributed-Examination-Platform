@@ -15,8 +15,8 @@ public class QuestionService {
         this.repository = repository;
     }
 
-    public List<Question> getAllQuestions() {
-        return repository.findAll();
+    public List<Question> getAllQuestionsFromUser(String admin_id) {
+        return repository.findAll(admin_id);
     }
 
     public Question getQuestion(int id) {
