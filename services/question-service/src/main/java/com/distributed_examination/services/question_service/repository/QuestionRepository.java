@@ -25,6 +25,7 @@ public class QuestionRepository {
     private final RowMapper<Question> rowMapper = (rs, rowNum) -> {
         Question q = new Question();
         q.setQuestion(rs.getString("question"));
+        q.setId(rs.getString("question_id"));
         String[] optionsArray = (String[]) rs.getArray("options").getArray();
         q.setOptions(Arrays.asList(optionsArray));
         q.setAnswerIndex(rs.getInt("answer_index"));
