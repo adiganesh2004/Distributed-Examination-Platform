@@ -34,7 +34,7 @@ clean_db() {
     while read -r REGION PORT; do
       if [[ -n "$PORT" ]]; then
         echo "Stopping CockroachDB in region '$REGION' (port $PORT)..."
-        cockroach node drain --insecure --host=localhost:$PORT
+        cockroach node drain --self --insecure --host=localhost:$PORT
         if [ $? -eq 0 ]; then
           echo "Successfully stopped node $REGION ($PORT)"
         else

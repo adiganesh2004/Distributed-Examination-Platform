@@ -23,9 +23,10 @@ public class JwtUtil {
         this.expiration = expiration;
     }
 
-    public String generateToken(String email, String role) {
+    public String generateToken(String email, String id, String role) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim("id",id)
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -39,5 +40,9 @@ public class JwtUtil {
 
     public String extractRole(String token) {
         return (String) extractClaims(token).get("role");
+    }
+
+    public String extractId(String token) {
+        return (String) extractClaims(token).get("id");
     }
 }

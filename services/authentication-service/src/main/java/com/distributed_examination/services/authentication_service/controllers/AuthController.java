@@ -14,8 +14,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.distributed_examination.services.authentication_service.model.CustomUserDetails;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -74,11 +75,11 @@ public class AuthController {
         String password = body.get("password");
 
         try {
-            UserDetails user = userDetailsService.loadUserByUsernameAndType(email, type.toUpperCase());
+            CustomUserDetails user = userDetailsService.loadUserByUsernameAndType(email, type.toUpperCase());
             if (!passwordEncoder.matches(password, user.getPassword())) {
                 throw new BadCredentialsException("Invalid password");
             }
-            String token = jwtUtil.generateToken(email, type.toUpperCase());
+            String token = jwtUtil.generateToken(email, user.getId() , type.toUpperCase());
             return ResponseEntity.ok(Map.of(
             "token", token,
             "userType", type.toLowerCase()

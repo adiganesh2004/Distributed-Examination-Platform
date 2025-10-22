@@ -1,12 +1,12 @@
 package com.distributed_examination.services.authentication_service.model;
 
 public class Candidate implements User {
-	private Long id;
+	private String id;
 	private String name, email, password, college, skills;
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getName() {
