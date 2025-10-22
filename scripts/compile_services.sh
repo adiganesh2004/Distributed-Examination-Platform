@@ -10,6 +10,7 @@ declare -A SERVICES_DIRS=(
   [TEST-EVAL-SERVICE]="../services/test-evaluation-service"
   [GATEWAY_DIR]="../services/gateway-service"
   [EUREKA_DIR]="../services/eureka_server"
+  [QUESTION-SERVICE]="../services/question-service"
 )
 
 declare -A SERVICE_JARS=(
@@ -20,6 +21,7 @@ declare -A SERVICE_JARS=(
   [TEST-EVAL-SERVICE]="test-evaluation-service-1.0.0.jar"
   [GATEWAY_DIR]="gateway-service-1.0.0.jar"
   [EUREKA_DIR]="eureka-server-1.0.0.jar"
+  [QUESTION-SERVICE]="question-service-1.0.0.jar"
 )
 
 for SERVICE in "${!SERVICES_DIRS[@]}"; do

@@ -15,6 +15,7 @@ declare -A SERVICES_DIRS=(
   [TEST-CREATE-SERVICE]="../services/test-creation-service"
   [TEST-EVAL-SERVICE]="../services/test-evaluation-service"
   [GATEWAY-SERVICE]="../services/gateway-service"
+  [QUESTION-SERVICE]="../services/question-service"
 )
 
 declare -A SERVICE_COUNTS=(
@@ -24,6 +25,7 @@ declare -A SERVICE_COUNTS=(
   [RESULTS-SERVICE]=0
   [TEST-CREATE-SERVICE]=0
   [TEST-EVAL-SERVICE]=0
+  [QUESTION-SERVICE]=1
 )
 
 declare -A SERVICE_JARS=(
@@ -33,6 +35,7 @@ declare -A SERVICE_JARS=(
   [TEST-CREATE-SERVICE]="target/test-creation-service-1.0.0.jar"
   [TEST-EVAL-SERVICE]="target/test-evaluation-service-1.0.0.jar"
   [GATEWAY-SERVICE]="target/gateway-service-1.0.0.jar"
+  [QUESTION-SERVICE]="target/question-service-1.0.0.jar"
 )
 
 get_free_port() {
