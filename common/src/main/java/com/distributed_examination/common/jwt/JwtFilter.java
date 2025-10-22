@@ -1,4 +1,4 @@
-package com.distributed_examination.services.authentication_service.jwt;
+package com.distributed_examination.common.jwt;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,6 +13,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import com.distributed_examination.common.model.CustomUserDetails;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -35,10 +37,11 @@ public class JwtFilter extends OncePerRequestFilter {
             try {
                 String email = jwtUtil.extractClaims(token).getSubject();
                 String role = jwtUtil.extractRole(token);
-
+                String id = jwtUtil.extractId(token);
+                CustomUserDetails customUserDetails = new CustomUserDetails(id, email, null, role);
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
-                                email, null,
+                                customUserDetails, null,
                                 List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
                         );
                 SecurityContextHolder.getContext().setAuthentication(auth);

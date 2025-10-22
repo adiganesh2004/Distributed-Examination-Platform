@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.distributed_examination.services.authentication_service.jwt.JwtFilter;
+import com.distributed_examination.common.jwt.JwtFilter;
 
 @Configuration
 public class SecurityConfig {

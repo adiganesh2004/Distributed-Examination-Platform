@@ -1,4 +1,4 @@
-package com.distributed_examination.services.authentication_service.jwt;
+package com.distributed_examination.common.jwt;
 
 import java.util.Date;
 import java.nio.charset.StandardCharsets;

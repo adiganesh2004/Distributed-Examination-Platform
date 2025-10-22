@@ -1,6 +1,7 @@
 package com.distributed_examination.services.question_service.config;
 
-import com.distributed_examination.services.question_service.jwt.JwtFilter;
+import com.distributed_examination.common.jwt.JwtFilter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

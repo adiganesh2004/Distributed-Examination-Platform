@@ -1,6 +1,6 @@
-Started CockroachDB on port 37269 in region india (HTTP port: 38314, join: )
-Started EUREKA on port 30885 in india
-Started QUESTION-SERVICE instance 1 on port 30738 in india
-Started AUTH-SERVICE instance 1 on port 32028 in india
-Started GATEWAY-SERVICE instance 1 on port 30022 in india
-Started GATEWAY on port 30022 in india
+Started CockroachDB on port 31267 in region india (HTTP port: 38852, join: )
+Started EUREKA on port 34578 in india
+Started QUESTION-SERVICE instance 1 on port 38714 in india
+Started AUTH-SERVICE instance 1 on port 38705 in india
+Started GATEWAY-SERVICE instance 1 on port 30395 in india
+Started GATEWAY on port 30395 in india

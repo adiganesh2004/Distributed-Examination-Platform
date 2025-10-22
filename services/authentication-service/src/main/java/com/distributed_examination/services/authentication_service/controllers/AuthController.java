@@ -3,7 +3,7 @@ package com.distributed_examination.services.authentication_service.controllers;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.distributed_examination.services.authentication_service.jwt.JwtUtil;
+import com.distributed_examination.common.jwt.JwtUtil;
 import com.distributed_examination.services.authentication_service.service.CustomUserDetailsService;
 
 import java.util.Map;
