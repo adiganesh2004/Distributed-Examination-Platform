@@ -1,13 +1,13 @@
 import { useState } from "react"
 import { Card } from "../components/ui/Card.jsx"
-import { Upload, Send, RefreshCcw } from "lucide-react"
+import { Upload, Send, RefreshCcw, Plus } from "lucide-react"
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 const AddQuestions = () => {
   const [csvFile, setCsvFile] = useState(null)
   const [question, setQuestion] = useState("")
-  const [options, setOptions] = useState(["", "", "", ""])
+  const [options, setOptions] = useState([""])   // start with one empty option
   const [answer, setAnswer] = useState(null)
   const [loading, setLoading] = useState(false)
 
@@ -47,6 +47,19 @@ const AddQuestions = () => {
     setOptions(newOptions)
   }
 
+  const addOption = () => {
+    setOptions([...options, ""])
+  }
+
+  const removeOption = (index) => {
+    if (options.length > 1) {
+      const newOptions = options.filter((_, i) => i !== index)
+      setOptions(newOptions)
+      if (answer === index) setAnswer(null)
+      else if (answer > index) setAnswer(answer - 1)
+    }
+  }
+
   const handleSubmit = async () => {
     if (!question || options.some((opt) => !opt) || answer === null) {
       alert("Please fill in all fields and select an answer.")
@@ -55,15 +68,11 @@ const AddQuestions = () => {
 
     setLoading(true)
     try {
-      const newQuestion = {
-        question,
-        options,
-        answerIndex: answer,
-      }
-
-      console.log("Uploading question:", newQuestion)
+      const newQuestion = { question, options, answerIndex: answer }
       const token = localStorage.getItem("token")
-      const res = await fetch(`${BACKEND_URL}/addquestion`, {
+
+      console.log(newQuestion);
+      const res = await fetch(`${BACKEND_URL}/question/admin/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(newQuestion),
@@ -87,7 +96,7 @@ const AddQuestions = () => {
   const resetFields = () => {
     setCsvFile(null)
     setQuestion("")
-    setOptions(["", "", "", ""])
+    setOptions([""])
     setAnswer(null)
   }
 
@@ -141,7 +150,7 @@ const AddQuestions = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-3">
           {options.map((opt, i) => (
             <div key={i} className="flex items-center space-x-3">
               <input
@@ -160,11 +169,28 @@ const AddQuestions = () => {
                 placeholder={`Option ${i + 1}`}
                 disabled={loading}
               />
+              {options.length > 1 && (
+                <button
+                  onClick={() => removeOption(i)}
+                  className="text-red-500 hover:text-red-700"
+                  disabled={loading}
+                >
+                  ✕
+                </button>
+              )}
             </div>
           ))}
+
+          <button
+            onClick={addOption}
+            className="flex items-center justify-center w-full border border-dashed border-gray-400 rounded-md py-2 text-gray-600 hover:bg-gray-50 transition"
+            disabled={loading}
+          >
+            <Plus className="w-4 h-4 mr-2" /> Add Option
+          </button>
         </div>
 
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 pt-4">
           <button
             onClick={handleSubmit}
             className={`flex-1 flex items-center justify-center px-6 py-3 rounded-lg text-white transition ${
