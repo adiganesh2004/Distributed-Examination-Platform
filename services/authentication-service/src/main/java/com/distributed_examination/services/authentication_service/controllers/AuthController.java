@@ -79,8 +79,10 @@ public class AuthController {
                 throw new BadCredentialsException("Invalid password");
             }
             String token = jwtUtil.generateToken(email, type.toUpperCase());
-            return ResponseEntity.ok(Map.of("token", token));
-
+            return ResponseEntity.ok(Map.of(
+            "token", token,
+            "userType", type.toLowerCase()
+            ));
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));
         } catch (BadCredentialsException e) {

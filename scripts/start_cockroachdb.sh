@@ -1,12 +1,10 @@
 #!/bin/bash
 
-# Usage: ./start_cockroachdb.sh <PORT> <REGION> [<JOIN_PORT>]
-# Example: ./start_cockroachdb.sh 26257 india
-# Example: ./start_cockroachdb.sh 26258 usa 26257
-
 PORT=$1
 REGION=$2
 JOIN_PORT=${3:-26257}  # Default join port is 26257
+LOGS_DIR="$(pwd)/logs"
+LOGS_DATABASE="$(pwd)/logs/DATABASE_$2.txt"
 
 if [[ -z "$PORT" || -z "$REGION" ]]; then
     echo "Usage: $0 <PORT> <REGION> [<JOIN_PORT>]"
@@ -15,6 +13,7 @@ fi
 
 DATA_DIR="../cockroach-data/$REGION"
 mkdir -p "$DATA_DIR"
+mkdir -p "$LOGS_DIR"
 
 # Determine join parameter
 JOIN_FLAG="--join=localhost:$JOIN_PORT"
@@ -38,7 +37,7 @@ if [[ "$PORT" -eq "$JOIN_PORT" ]]; then
     --cache=.05 --max-sql-memory=.05 \
     --store="$DATA_DIR" \
     --locality="region=$REGION" \
-    --background
+    >> "$LOGS_DATABASE" 2>&1 &
 else
     cockroach start \
         --insecure \
@@ -48,6 +47,6 @@ else
         --locality="region=$REGION" \
         --cache=.05 --max-sql-memory=.05 \
         $JOIN_FLAG \
-        --background
+        >> "$LOGS_DATABASE" 2>&1 &
 fi
 echo "Started CockroachDB on port $PORT in region $REGION (HTTP port: $HTTP_PORT, join: $JOIN_FLAG)" >> UsedPorts.txt

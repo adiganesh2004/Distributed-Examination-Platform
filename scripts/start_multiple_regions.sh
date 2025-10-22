@@ -3,6 +3,11 @@
 > UsedPorts.txt
 
 CURRENT_DIR="$(pwd)"
+LOGS_DIR="$CURRENT_DIR/logs"
+DATABASE_PORTS="$LOGS_DIR/DBPORTS.txt"
+mkdir -p "$LOGS_DIR"
+
+> "$DATABASE_PORTS"
 
 declare -A NODES
 
@@ -34,10 +39,14 @@ for PORT in "${!NODES[@]}"; do
     cd "$CURRENT_DIR"
     ./start_cockroachdb.sh "$PORT" "$REGION" "$MAIN_DB_PORT"
     echo "Started the Database at $REGION $PORT"
+    echo "$REGION $PORT" >> "$DATABASE_PORTS"
 done
 
+sleep 2
+
 ./cockroachdb_schema.sh "$MAIN_DB_PORT"
-echo "DB ScHEMA DONE"
+
+echo "DB SCHEMA DONE"
 
 for PORT in "${!NODES[@]}"; do
     REGION=${NODES[$PORT]}

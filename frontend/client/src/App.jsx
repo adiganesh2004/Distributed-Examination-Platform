@@ -63,34 +63,25 @@ function App() {
             path="/home"
             element={
               
-              // <ProtectedRoute>
-              //   <Home />
-              // </ProtectedRoute>
-              <>
-              <Home />
-              </>
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/addquestions"
             element={
-              // <ProtectedAdminRoute>
-              //   <AddQuestions/>
-              // </ProtectedAdminRoute>
-              <>
-              <AddQuestions/>
-              </>
+              <ProtectedAdminRoute>
+                <AddQuestions/>
+              </ProtectedAdminRoute>
             }
           />
           <Route
             path="/createtest"
             element={
-              // <ProtectedAdminRoute>
-              // <CreateTest/>
-              // </ProtectedAdminRoute>
-              <>
+              <ProtectedAdminRoute>
               <CreateTest/>
-              </>
+              </ProtectedAdminRoute>
             }
           />
         </Routes>
