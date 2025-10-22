@@ -31,7 +31,7 @@ public class QuestionController {
 
     @PostMapping("/admin/create")
     public void createQuestion(@RequestBody Question q, @AuthenticationPrincipal CustomUserDetails user) {
-        service.createQuestion(q);
+        service.createQuestion(q, user.getId());
     }
 
     @DeleteMapping("/admin/delete/{id}")

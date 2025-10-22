@@ -50,11 +50,11 @@ public class QuestionRepository {
         return jdbcTemplate.queryForObject("SELECT * FROM questions WHERE question_id = ?", new Object[]{id}, rowMapper);
     }
 
-    public void save(Question q) {
+    public void save(Question q, String admin_id) {
         try {
-            String optionsJson = objectMapper.writeValueAsString(q.getOptions());
-            jdbcTemplate.update("INSERT INTO questions (question, options, answer_index) VALUES (?, ?, ?)",
-                    q.getQuestion(), optionsJson, q.getAnswerIndex());
+            String pgArray = "{" + String.join(",", q.getOptions()) + "}";
+            jdbcTemplate.update("INSERT INTO questions (question, options, answer_index, admin_id) VALUES (?, ?, ?, ?)",
+                    q.getQuestion(), pgArray, q.getAnswerIndex(), admin_id);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

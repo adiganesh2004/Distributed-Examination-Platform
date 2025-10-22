@@ -23,8 +23,8 @@ public class QuestionService {
         return repository.findById(id);
     }
 
-    public void createQuestion(Question q) {
-        repository.save(q);
+    public void createQuestion(Question q, String admin_id) {
+        repository.save(q, admin_id);
     }
 
     public void deleteQuestion(int id) {

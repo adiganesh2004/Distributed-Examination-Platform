@@ -72,7 +72,7 @@ const AddQuestions = () => {
       const token = localStorage.getItem("token")
 
       console.log(newQuestion);
-      const res = await fetch(`${BACKEND_URL}/question/admin/add`, {
+      const res = await fetch(`${BACKEND_URL}/questions/admin/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(newQuestion),

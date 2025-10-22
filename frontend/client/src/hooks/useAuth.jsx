@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
         const userData = await response.json()
         setUser(userData)
         localStorage.setItem("user", JSON.stringify(userData))
-        localStorage.setItem("token", JSON.stringify(userData))
+        localStorage.setItem("token", userData.token)
         return { success: true }
       } else {
         return { success: false, error: "Invalid credentials" }
