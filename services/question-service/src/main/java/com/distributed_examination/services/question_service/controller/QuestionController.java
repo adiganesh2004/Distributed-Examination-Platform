@@ -25,7 +25,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public Question getById(@PathVariable int id, @AuthenticationPrincipal CustomUserDetails user) {
+    public Question getById(@PathVariable String id, @AuthenticationPrincipal CustomUserDetails user) {
         return service.getQuestion(id);
     }
 
@@ -35,7 +35,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/admin/delete/{id}")
-    public void deleteQuestion(@PathVariable int id, @AuthenticationPrincipal CustomUserDetails user) {
+    public void deleteQuestion(@PathVariable String id, @AuthenticationPrincipal CustomUserDetails user) {
         service.deleteQuestion(id);
     }
 }

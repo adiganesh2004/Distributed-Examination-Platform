@@ -19,7 +19,7 @@ public class QuestionService {
         return repository.findAll(admin_id);
     }
 
-    public Question getQuestion(int id) {
+    public Question getQuestion(String id) {
         return repository.findById(id);
     }
 
@@ -27,7 +27,7 @@ public class QuestionService {
         repository.save(q, admin_id);
     }
 
-    public void deleteQuestion(int id) {
+    public void deleteQuestion(String id) {
         repository.deleteById(id);
     }
 }
