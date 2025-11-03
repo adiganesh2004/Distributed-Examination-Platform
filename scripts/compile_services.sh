@@ -12,6 +12,7 @@ declare -A SERVICES_DIRS=(
   [GATEWAY_DIR]="../services/gateway-service"
   [EUREKA_DIR]="../services/eureka_server"
   [QUESTION-SERVICE]="../services/question-service"
+  [TEST-TAKING-SERVICE]="../services/test-taking-service"
 )
 
 declare -A SERVICE_JARS=(
@@ -24,9 +25,10 @@ declare -A SERVICE_JARS=(
   [GATEWAY_DIR]="gateway-service-1.0.0.jar"
   [EUREKA_DIR]="eureka-server-1.0.0.jar"
   [QUESTION-SERVICE]="question-service-1.0.0.jar"
+  [TEST-TAKING-SERVICE]="test-taking-service-1.0.0.jar"
 )
 
-SERVICES_ORDER=("COMMON" "AUTH-SERVICE" "GATEWAY_DIR" "EUREKA_DIR" "QUESTION-SERVICE")
+SERVICES_ORDER=("COMMON" "AUTH-SERVICE" "GATEWAY_DIR" "EUREKA_DIR" "QUESTION-SERVICE" "TEST-TAKING-SERVICE")
 # "PROCT-SERVICE" "RESULTS-SERVICE" "TEST-CREATE-SERVICE" "TEST-EVAL-SERVICE"
 
 for SERVICE in "${SERVICES_ORDER[@]}"; do
