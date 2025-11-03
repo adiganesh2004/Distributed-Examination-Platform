@@ -37,7 +37,7 @@ public class QuestionRepository {
         return jdbcTemplate.query("SELECT * FROM questions where admin_id = ?", new Object[]{admin_id}, rowMapper);
     }
 
-    public Question findById(int id) {
+    public Question findById(String id) {
         return jdbcTemplate.queryForObject("SELECT * FROM questions WHERE question_id = ?", new Object[]{id}, rowMapper);
     }
 
@@ -51,7 +51,7 @@ public class QuestionRepository {
         }
     }
 
-    public void deleteById(int id) {
+    public void deleteById(String id) {
         jdbcTemplate.update("DELETE FROM questions WHERE question_id = ?", id);
     }
 }

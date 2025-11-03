@@ -1,37 +1,35 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { Card } from "../components/ui/Card.jsx"
-import { Upload, Send, RefreshCcw, Plus } from "lucide-react"
+import { Upload, Send, RefreshCcw, Plus, Trash2 } from "lucide-react"
 
-const BACKEND_URL = import.meta.env.VITE_API_URL;
+const BACKEND_URL = import.meta.env.VITE_API_URL
 
 const AddQuestions = () => {
   const [csvFile, setCsvFile] = useState(null)
   const [question, setQuestion] = useState("")
-  const [options, setOptions] = useState([""])   // start with one empty option
+  const [options, setOptions] = useState([""])
   const [answer, setAnswer] = useState(null)
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
   const handleCSVUpload = async () => {
     if (!csvFile) return alert("Select a CSV first")
-    
     setLoading(true)
     try {
-        const token = localStorage.getItem("token")
-        const formData = new FormData()
-        formData.append("file", csvFile)
-        const res = await fetch(`${BACKEND_URL}/csvquestions`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            },
-            body: formData
-        })
+      const token = localStorage.getItem("token")
+      const formData = new FormData()
+      formData.append("file", csvFile)
+      const res = await fetch(`${BACKEND_URL}/csvquestions`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      })
 
-        if (!res.ok) {
-            const body = await res.json().catch(() => ({}))
-            throw new Error(body.message || "Uploading failed")
-        }
-        
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.message || "Uploading failed")
+      }
       alert(`CSV ${csvFile.name} uploaded successfully`)
     } catch (err) {
       console.error(err)
@@ -47,9 +45,7 @@ const AddQuestions = () => {
     setOptions(newOptions)
   }
 
-  const addOption = () => {
-    setOptions([...options, ""])
-  }
+  const addOption = () => setOptions([...options, ""])
 
   const removeOption = (index) => {
     if (options.length > 1) {
@@ -71,10 +67,12 @@ const AddQuestions = () => {
       const newQuestion = { question, options, answerIndex: answer }
       const token = localStorage.getItem("token")
 
-      console.log(newQuestion);
       const res = await fetch(`${BACKEND_URL}/questions/admin/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(newQuestion),
       })
 
@@ -107,7 +105,6 @@ const AddQuestions = () => {
       {/* CSV Upload Section */}
       <Card className="p-8 space-y-4 shadow-lg">
         <h3 className="text-xl font-semibold text-gray-800">Upload CSV File</h3>
-
         <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-4">
           <input
             type="file"
@@ -209,6 +206,17 @@ const AddQuestions = () => {
           >
             <RefreshCcw className="w-5 h-5 mr-2" />
             Reset
+          </button>
+        </div>
+
+        {/* New Manage/Delete Button */}
+        <div className="pt-8">
+          <button
+            onClick={() => navigate("/deletequestions")}
+            className="flex items-center justify-center w-full px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+          >
+            <Trash2 className="w-5 h-5 mr-2" />
+            Manage / Delete Existing Questions
           </button>
         </div>
       </Card>

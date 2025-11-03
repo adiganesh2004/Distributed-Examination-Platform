@@ -1,68 +1,36 @@
 import { Routes, Route } from "react-router-dom"
 import { AuthProvider } from "./hooks/useAuth.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx"
+import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx"
+
+import Navbar from "./components/Navbar.jsx"
+import LandingPage from "./pages/LandingPage.jsx"
 import CandidateLogin from "./pages/CandidateLogin.jsx"
 import AdminLogin from "./pages/AdminLogin.jsx"
-import Home from "./pages/Home.jsx"
 import Signup from "./pages/Signup.jsx"
-import LandingPage from "./pages/LandingPage.jsx"
-import Navbar from "./components/Navbar.jsx"
-import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx"
+import Home from "./pages/Home.jsx"
 import AddQuestions from "./pages/AddQuestions.jsx"
 import CreateTest from "./pages/CreateTest.jsx"
+import DeleteQuestion from "./pages/DeleteQuestion.jsx" 
 
 function App() {
   return (
     <div className="min-h-screen bg-background">
       <AuthProvider>
-        
-      <Navbar/>
+        <Navbar />
+
         <Routes>
-          {/* Routes with navbar */}
-          <Route
-            path="/"
-            element={
-              <>
-                <LandingPage />
-              </>
-            }
-          />
-          <Route
-            path="/candidate-login"
-            element={
-              <>
-                <CandidateLogin />
-              </>
-            }
-          />
-          <Route
-            path="/admin-login"
-            element={
-              <>
-                <AdminLogin />
-              </>
-            }
-          />
-          <Route
-            path="/candidate-signup"
-            element={
-              <>
-                <Signup role="candidate" />
-              </>
-            }
-          />
-          <Route
-            path="/admin-signup"
-            element={
-              <>
-                <Signup role="admin" />
-              </>
-            }
-          />
+          {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/candidate-login" element={<CandidateLogin />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/candidate-signup" element={<Signup role="candidate" />} />
+          <Route path="/admin-signup" element={<Signup role="admin" />} />
+
+          {/* Protected Routes */}
           <Route
             path="/home"
             element={
-              
               <ProtectedRoute>
                 <Home />
               </ProtectedRoute>
@@ -72,7 +40,7 @@ function App() {
             path="/addquestions"
             element={
               <ProtectedAdminRoute>
-                <AddQuestions/>
+                <AddQuestions />
               </ProtectedAdminRoute>
             }
           />
@@ -80,7 +48,16 @@ function App() {
             path="/createtest"
             element={
               <ProtectedAdminRoute>
-              <CreateTest/>
+                <CreateTest />
+              </ProtectedAdminRoute>
+            }
+          />
+
+          <Route
+            path="/deletequestions"
+            element={
+              <ProtectedAdminRoute>
+                <DeleteQuestion />
               </ProtectedAdminRoute>
             }
           />
