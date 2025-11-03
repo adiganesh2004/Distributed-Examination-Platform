@@ -12,6 +12,7 @@ import Home from "./pages/Home.jsx"
 import AddQuestions from "./pages/AddQuestions.jsx"
 import CreateTest from "./pages/CreateTest.jsx"
 import DeleteQuestion from "./pages/DeleteQuestion.jsx" 
+import TestTaking from "./pages/TestTaking.jsx"
 
 function App() {
   return (
@@ -59,6 +60,13 @@ function App() {
               <ProtectedAdminRoute>
                 <DeleteQuestion />
               </ProtectedAdminRoute>
+            }
+          />
+
+          <Route
+            path="/testtake"
+            element={
+              < TestTaking/>
             }
           />
         </Routes>

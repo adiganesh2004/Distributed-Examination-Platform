@@ -16,6 +16,6 @@ get_free_port() {
 PORT=$(get_free_port)
 REACT_LOG="$LOGS_DIR/frontend-$PORT.log"
 cd "$FRONTEND_DIR"
-VITE_API_URL="http://localhost:${GATEWAY_PORT}" npm run dev -- --port $PORT 1>"$REACT_LOG" 2>&1 &
+VITE_API_URL="http://localhost:${GATEWAY_PORT}" VITE_BACKEND_PORT="${GATEWAY_PORT}" npm run dev -- --port $PORT 1>"$REACT_LOG" 2>&1 &
 
 echo "STARTED REACT ON $PORT for region $REGION" 
