@@ -1,4 +1,4 @@
-package com.distributed_examination.services.question_service.model;
+package com.distributed_examination.common.model;
 
 import java.util.List;
 
