@@ -1,6 +1,6 @@
 package com.distributed_examination.services.question_service.repository;
 
-import com.distributed_examination.services.question_service.model.Question;
+import com.distributed_examination.common.model.Question;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

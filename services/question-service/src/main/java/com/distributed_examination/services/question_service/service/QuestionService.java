@@ -1,6 +1,6 @@
 package com.distributed_examination.services.question_service.service;
 
-import com.distributed_examination.services.question_service.model.Question;
+import com.distributed_examination.common.model.Question;
 import com.distributed_examination.services.question_service.repository.QuestionRepository;
 import org.springframework.stereotype.Service;
 
