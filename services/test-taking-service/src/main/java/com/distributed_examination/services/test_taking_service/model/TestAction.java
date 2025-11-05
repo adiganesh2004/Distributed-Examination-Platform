@@ -1,13 +1,13 @@
 package com.distributed_examination.services.test_taking_service.model;
 
 public class TestAction {
-    private String token;
-    private String userId;
-    private String type;
-    private String testId;
-    private String nextQuestionId;
-    private String currentQuestionId;
-    private int chosenOption;
+    public String token;
+    public String userId;
+    public String type;
+    public String testId;
+    public String nextQuestionId;
+    public String currentQuestionId;
+    public int chosenOption;
 
     public TestAction() {
     }

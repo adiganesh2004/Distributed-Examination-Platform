@@ -38,22 +38,122 @@ public class TestState{
         }
     }
 
-    public void UpdateQuestion(String nextQuestionId){
-        if(prevQuestionId!=null){
-            QuestionResponse prevQuestionResonse = questionsResponse.get(prevQuestionId);
-            prevQuestionResonse.updateTimeSpent(Instant.now());
-        }
-        prevQuestionId = nextQuestionId;
-        QuestionResponse currentQuestionResponse = questionsResponse.get(nextQuestionId);
-        currentQuestionResponse.setLastOpened(Instant.now());
-        currentQuestionResponse.setQuestionSeen(true);
+    public boolean isWithinSessionTime() {
+        Instant now = Instant.now();
+        return !now.isBefore(sessionStartTime) && !now.isAfter(sessionEndTime);
     }
 
-    public void ChangeAnswer(String questionId, int chosenOption){
-        if(questionId!=null){
-            QuestionResponse response = questionsResponse.get(questionId);
-            response.setChosenOption(chosenOption);
-            response.incrementAnswerChangedTimes();
+    public void UpdateQuestion(String nextQuestionId) {
+        if (!isWithinSessionTime()) {
+            return;
         }
+
+        if (prevQuestionId != null) {
+            QuestionResponse prevResponse = questionsResponse.get(prevQuestionId);
+            if (prevResponse != null) {
+                prevResponse.updateTimeSpent(Instant.now());
+            }
+        }
+
+        prevQuestionId = nextQuestionId;
+        QuestionResponse currentResponse = questionsResponse.get(nextQuestionId);
+        if (currentResponse != null) {
+            currentResponse.setLastOpened(Instant.now());
+            currentResponse.setQuestionSeen(true);
+        }
+    }
+
+    public void ChangeAnswer(String questionId, int chosenOption) {
+        if (!isWithinSessionTime()) {
+            return;
+        }
+
+        if (questionId != null) {
+            QuestionResponse response = questionsResponse.get(questionId);
+            if (response != null) {
+                response.setChosenOption(chosenOption);
+                response.incrementAnswerChangedTimes();
+            }
+        }
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getTestId() {
+        return testId;
+    }
+
+    public void setTestId(String testId) {
+        this.testId = testId;
+    }
+
+    public Instant getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Instant startTime) {
+        this.startTime = startTime;
+    }
+
+    public Instant getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Instant endTime) {
+        this.endTime = endTime;
+    }
+
+    public Instant getSessionStartTime() {
+        return sessionStartTime;
+    }
+
+    public void setSessionStartTime(Instant sessionStartTime) {
+        this.sessionStartTime = sessionStartTime;
+    }
+
+    public Instant getSessionEndTime() {
+        return sessionEndTime;
+    }
+
+    public void setSessionEndTime(Instant sessionEndTime) {
+        this.sessionEndTime = sessionEndTime;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public String getPrevQuestionId() {
+        return prevQuestionId;
+    }
+
+    public void setPrevQuestionId(String prevQuestionId) {
+        this.prevQuestionId = prevQuestionId;
+    }
+
+    public Map<String, Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Map<String, Question> questions) {
+        this.questions = questions;
+    }
+
+    public Map<String, QuestionResponse> getQuestionsResponse() {
+        return questionsResponse;
+    }
+
+    public void setQuestionsResponse(Map<String, QuestionResponse> questionsResponse) {
+        this.questionsResponse = questionsResponse;
     }
 }
