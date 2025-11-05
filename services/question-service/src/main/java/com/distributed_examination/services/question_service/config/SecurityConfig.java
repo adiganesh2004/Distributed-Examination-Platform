@@ -29,7 +29,7 @@ public class SecurityConfig {
             // Define endpoint permissions
             .authorizeHttpRequests(auth -> auth
                 // restrict admin operations
-                .requestMatchers("/questions/admin/**").permitAll()
+                .requestMatchers("/questions/admin/**").hasRole("ADMIN")
                 .requestMatchers("/questions/**").permitAll()
                 // allow authenticated users for everything else
                 .anyRequest().authenticated()
