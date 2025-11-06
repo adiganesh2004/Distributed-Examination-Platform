@@ -3,6 +3,7 @@ import { AuthProvider } from "./hooks/useAuth.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx"
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute.jsx"
 
+import TestsPage from "./pages/TestsPage.jsx";
 import Navbar from "./components/Navbar.jsx"
 import LandingPage from "./pages/LandingPage.jsx"
 import CandidateLogin from "./pages/CandidateLogin.jsx"
@@ -64,11 +65,22 @@ function App() {
           />
 
           <Route
-            path="/testtake"
+            path="/tests"
             element={
-              < TestTaking/>
-            }
-          />
+              <ProtectedRoute>
+                <TestsPage />
+              </ProtectedRoute>
+    }
+  />
+
+  <Route
+    path="/testtake/:testId"
+    element={
+      <ProtectedRoute>
+        <TestTaking />
+      </ProtectedRoute>
+    }
+  />
         </Routes>
       </AuthProvider>
     </div>

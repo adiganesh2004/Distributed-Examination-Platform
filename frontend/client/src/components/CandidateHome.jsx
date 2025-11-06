@@ -1,7 +1,10 @@
-import { Card } from "../components/ui/Card.jsx"
-import { BookOpen, BarChart3, User } from "lucide-react"
+import { Card } from "../components/ui/Card.jsx";
+import { BookOpen, BarChart3, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CandidateHome = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <div className="mb-8">
@@ -10,18 +13,25 @@ const CandidateHome = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="p-6 hover:shadow-lg transition-shadow">
+        {/* 🧩 Available Tests Card */}
+        <Card
+          onClick={() => navigate("/tests")}
+          className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
+        >
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-blue-100 rounded-lg">
               <BookOpen className="w-6 h-6 text-blue-600" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Available Tests</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Available Tests
+              </h3>
               <p className="text-gray-600">View and take your tests</p>
             </div>
           </div>
         </Card>
 
+        {/* My Results Card */}
         <Card className="p-6 hover:shadow-lg transition-shadow">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-green-100 rounded-lg">
@@ -34,6 +44,7 @@ const CandidateHome = () => {
           </div>
         </Card>
 
+        {/* Profile Card */}
         <Card className="p-6 hover:shadow-lg transition-shadow">
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-orange-100 rounded-lg">
@@ -47,7 +58,7 @@ const CandidateHome = () => {
         </Card>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default CandidateHome
+export default CandidateHome;

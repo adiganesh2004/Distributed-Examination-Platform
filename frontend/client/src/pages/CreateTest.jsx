@@ -76,7 +76,8 @@ const CreateTest = () => {
     try {
       setLoading(true)
       const token = localStorage.getItem("token")
-      const res = await fetch(`${BACKEND_URL}/maketest`, {
+      console.log(`${BACKEND_URL}`)
+      const res = await fetch(`${BACKEND_URL}/tests/admin/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

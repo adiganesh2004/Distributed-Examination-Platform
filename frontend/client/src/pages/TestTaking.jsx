@@ -1,190 +1,143 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.jsx";
 
-const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
+const BACKEND_WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8080/testtake";
 
 const TestTaking = () => {
-  const socketRef = useRef(null);
+  const { testId } = useParams();
+  const { user } = useAuth();
+  const [socket, setSocket] = useState(null);
   const [connected, setConnected] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [chosenOption, setChosenOption] = useState(null);
+  const [messageLog, setMessageLog] = useState([]);
+  const wsRef = useRef(null);
 
-  // Questions will come from backend
-  const [questions, setQuestions] = useState([]); // TODO: Populate from backend WebSocket
-  const [currentQ, setCurrentQ] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-
-  // 🔌 Connect to WebSocket
+  // Connect to WebSocket when component mounts
   useEffect(() => {
-    const socket = new WebSocket(`ws://localhost:${BACKEND_PORT}/testtake`);
+    if (!user || !user.token) return;
 
-    socket.onopen = () => {
-      console.log("Connected to WebSocket");
+    const ws = new WebSocket(BACKEND_WS_URL);
+    wsRef.current = ws;
+
+    ws.onopen = () => {
+      console.log("WebSocket connected");
       setConnected(true);
-      setMessages((prev) => [...prev, "Connected to server"]);
 
-      // Optionally: request questions from backend
-      socket.send(JSON.stringify({ action: "REQUEST_QUESTIONS" }));
+      // Start test message
+      const startMessage = {
+        token: user.token,
+        type: "start_test",
+        testId: testId,
+      };
+      ws.send(JSON.stringify(startMessage));
     };
 
-    socket.onmessage = (event) => {
-      console.log("Received:", event.data);
-      setMessages((prev) => [...prev, "Server: " + event.data]);
-
+    ws.onmessage = (event) => {
+      console.log("Message from server:", event.data);
       try {
         const data = JSON.parse(event.data);
+        setMessageLog((prev) => [...prev, data]);
 
-        // TODO: Backend can send { type: "QUESTIONS", payload: [...] }
-        if (data.type === "QUESTIONS") {
-          setQuestions(data.payload);
+        // If the backend sends question data, update UI
+        if (data.question) {
+          setCurrentQuestion(data.question);
+          setQuestions((prev) => [...prev, data.question]);
         }
       } catch (err) {
-        console.warn("Non-JSON message from server:", event.data);
+        console.error("Error parsing message:", err);
       }
     };
 
-    socket.onclose = () => {
-      console.log("Connection closed");
+    ws.onerror = (error) => console.error("WebSocket error:", error);
+    ws.onclose = () => {
+      console.log("WebSocket closed");
       setConnected(false);
-      setMessages((prev) => [...prev, "Connection closed"]);
     };
 
-    socket.onerror = (err) => {
-      console.error("WebSocket error:", err);
-      setMessages((prev) => [...prev, "WebSocket error"]);
+    setSocket(ws);
+
+    return () => ws.close();
+  }, [user, testId]);
+
+  // Handle changing answers
+  const handleAnswerChange = (optionIndex) => {
+    if (!connected || !wsRef.current || !currentQuestion) return;
+
+    setChosenOption(optionIndex);
+
+    const message = {
+      token: user.token,
+      type: "change_answer",
+      testId: testId,
+      currentQuestionId: currentQuestion.id,
+      chosenOption: optionIndex,
     };
-
-    socketRef.current = socket;
-    return () => socket.close();
-  }, []);
-
-  // Send timestamp to backend
-  const sendTimestamp = (actionType) => {
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      const payload = {
-        action: actionType, // "NEXT" or "SUBMIT"
-        questionId: questions[currentQ]?.id || null,
-        timestamp: new Date().toISOString(),
-        selectedOption,
-      };
-      socketRef.current.send(JSON.stringify(payload));
-      setMessages((prev) => [
-        ...prev,
-        `You: ${actionType} at ${payload.timestamp}`,
-      ]);
-    } else {
-      alert("WebSocket not connected!");
-    }
+    wsRef.current.send(JSON.stringify(message));
   };
-  const handleNext = () => {
-    sendTimestamp("NEXT");
-    if (currentQ < questions.length - 1) {
-      setCurrentQ((prev) => prev + 1);
-      setSelectedOption(null);
-    } else {
-      setSubmitted(true);
-      sendTimestamp("SUBMIT");
-    }
+
+  // Handle moving to next question
+  const handleNextQuestion = () => {
+    if (!connected || !wsRef.current || !currentQuestion) return;
+
+    const message = {
+      token: user.token,
+      type: "next_question",
+      testId: testId,
+      currentQuestionId: currentQuestion.id,
+      nextQuestionId: "some_next_question_id", // backend may provide next IDs dynamically
+    };
+    wsRef.current.send(JSON.stringify(message));
   };
-  if (submitted) {
-    return (
-      <div style={{ maxWidth: 600, margin: "50px auto", textAlign: "center" }}>
-        <h2>Test Submitted!</h2>
-        <p>All timestamps sent to backend successfully.</p>
-      </div>
-    );
-  }
-
-  // 🕳️ Handle when questions not yet loaded
-  if (questions.length === 0) {
-    return (
-      <div style={{ maxWidth: 600, margin: "50px auto", textAlign: "center" }}>
-        <h2>Test Taking System</h2>
-        <p style={{ color: connected ? "green" : "red" }}>
-          {connected ? "Waiting for questions from backend..." : "Connecting..."}
-        </p>
-      </div>
-    );
-  }
-
-  const q = questions[currentQ];
 
   return (
-    <div style={{ maxWidth: 600, margin: "50px auto", fontFamily: "sans-serif" }}>
-      <h2>Test Taking System</h2>
-      <p style={{ color: connected ? "green" : "red" }}>
-        {connected ? "Connected to server" : "Connecting..."}
-      </p>
+    <div className="p-6 max-w-3xl mx-auto">
+      <h2 className="text-xl font-semibold mb-4">Test Taking: {testId}</h2>
 
-      {/* Question Section */}
-      <div
-        style={{
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "20px",
-          marginTop: "20px",
-          background: "#f9f9f9",
-        }}
-      >
-        <h3>
-          Question {currentQ + 1} of {questions.length}
-        </h3>
-        <p>{q.text}</p>
+      {!connected ? (
+        <p>Connecting to test server...</p>
+      ) : (
+        <>
+          {currentQuestion ? (
+            <div className="border p-4 rounded-lg shadow">
+              <h3 className="font-bold mb-3">{currentQuestion.questionText || "Question text here"}</h3>
+              <ul>
+                {(currentQuestion.options || []).map((opt, idx) => (
+                  <li key={idx}>
+                    <label>
+                      <input
+                        type="radio"
+                        name="option"
+                        checked={chosenOption === idx}
+                        onChange={() => handleAnswerChange(idx)}
+                      />
+                      {opt}
+                    </label>
+                  </li>
+                ))}
+              </ul>
 
-        {q.options?.map((opt, i) => (
-          <label
-            key={i}
-            style={{
-              display: "block",
-              margin: "8px 0",
-              cursor: "pointer",
-            }}
-          >
-            <input
-              type="radio"
-              name={`q${q.id}`}
-              value={opt}
-              checked={selectedOption === opt}
-              onChange={() => setSelectedOption(opt)}
-            />{" "}
-            {opt}
-          </label>
-        ))}
-      </div>
+              <button
+                onClick={handleNextQuestion}
+                className="mt-4 bg-blue-600 text-white px-4 py-2 rounded"
+              >
+                Next Question
+              </button>
+            </div>
+          ) : (
+            <p>Waiting for test to start or first question...</p>
+          )}
 
-      {/* Buttons */}
-      <div style={{ marginTop: 20 }}>
-        <button
-          onClick={handleNext}
-          disabled={!selectedOption}
-          style={{
-            padding: "10px 20px",
-            background: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: selectedOption ? "pointer" : "not-allowed",
-          }}
-        >
-          {currentQ === questions.length - 1 ? "Submit Test" : "Next"}
-        </button>
-      </div>
-
-      {/* Log messages */}
-      <div
-        style={{
-          border: "1px solid #ddd",
-          borderRadius: "8px",
-          padding: "10px",
-          marginTop: "20px",
-          height: "150px",
-          overflowY: "auto",
-          backgroundColor: "#fafafa",
-        }}
-      >
-        {messages.map((msg, i) => (
-          <div key={i}>{msg}</div>
-        ))}
-      </div>
+          <div className="mt-6">
+            <h4 className="font-semibold">Message Log:</h4>
+            <pre className="bg-gray-100 p-2 rounded text-sm max-h-60 overflow-auto">
+              {JSON.stringify(messageLog, null, 2)}
+            </pre>
+          </div>
+        </>
+      )}
     </div>
   );
 };
