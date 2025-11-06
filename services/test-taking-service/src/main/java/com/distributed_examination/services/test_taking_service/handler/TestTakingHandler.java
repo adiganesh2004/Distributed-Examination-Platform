@@ -34,7 +34,16 @@ public class TestTakingHandler extends TextWebSocketHandler {
         if ("start_test".equalsIgnoreCase(testAction.getType())) {
             String response = repository.startTest(session.getId(), testAction);
             session.sendMessage(new TextMessage(response));
-        } else {
+        }else if("change_question".equalsIgnoreCase(testAction.getType())){
+            String response = repository.changeQuestion(session.getId(), testAction);
+            session.sendMessage(new TextMessage(response));
+        }else if("change_answer".equalsIgnoreCase(testAction.getType())){
+            String response = repository.changeAnswer(session.getId(), testAction);
+            session.sendMessage(new TextMessage(response));
+        }else if("end_test".equalsIgnoreCase(testAction.getType())){
+            String response = repository.endTest(session.getId());
+            session.sendMessage(new TextMessage(response));
+        }else {
             session.sendMessage(new TextMessage("{\"error\":\"Unknown action type\"}"));
         }
     }
