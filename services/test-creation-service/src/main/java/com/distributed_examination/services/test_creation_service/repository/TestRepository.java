@@ -1,8 +1,10 @@
 package com.distributed_examination.services.test_creation_service.repository;
 import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
 import com.distributed_examination.services.test_creation_service.model.Test;
 
 @Repository
@@ -39,6 +41,13 @@ public class TestRepository {
                 "SELECT * FROM tests WHERE admin_id = ?",
                 new Object[]{adminId},
                 testRowMapper
+        );
+    }
+    
+    public List<Test> findCurrentTests() {
+        return jdbcTemplate.query(
+            "SELECT * FROM tests WHERE start_time <= NOW() AND end_time >= NOW()",
+            testRowMapper
         );
     }
 

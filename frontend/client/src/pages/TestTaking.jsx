@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.jsx";
 
-const BACKEND_WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8080/testtake";
+const BACKEND_WS_URL =  "ws://localhost:32731/testtake";
+console.log(BACKEND_WS_URL);
 
 const TestTaking = () => {
   const { testId } = useParams();

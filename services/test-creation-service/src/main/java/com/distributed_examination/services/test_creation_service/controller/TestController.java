@@ -36,6 +36,12 @@ public class TestController {
         service.createTest(t, user.getId());
     }
 
+    @GetMapping("/getcurrent")
+        public List<Test> getCurrentTests() {
+            return service.getCurrentTests();
+    }
+
+
     @DeleteMapping("/admin/delete/{id}")
     public void deleteTest(@PathVariable String id) {
         service.deleteTest(id);

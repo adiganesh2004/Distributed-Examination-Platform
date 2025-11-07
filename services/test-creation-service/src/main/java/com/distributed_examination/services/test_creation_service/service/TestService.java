@@ -27,6 +27,10 @@ public class TestService {
         repository.save(t, adminId);
     }
 
+    public List<Test> getCurrentTests() {
+        return repository.findCurrentTests();
+    }
+
     public void deleteTest(String id) {
         repository.deleteById(id);
     }

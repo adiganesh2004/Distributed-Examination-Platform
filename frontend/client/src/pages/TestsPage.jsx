@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const BACKEND_URL = `http://localhost:${import.meta.env.VITE_API_URL}`;
+const BACKEND_URL = `${import.meta.env.VITE_API_URL}`;
 
 const TestsPage = () => {
   const [tests, setTests] = useState([]);
@@ -17,7 +17,7 @@ const TestsPage = () => {
       return;
     }
 
-    fetch(`${BACKEND_URL}/tests/admin/getall`, {
+    fetch(`${BACKEND_URL}/tests/getcurrent`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
