@@ -48,8 +48,8 @@ public class TestTakingRepository{
             }
 
             testStates.put(sessionId, testState);
-            scheduler.schedule(() -> endTest(sessionId), testState.getDuration(), TimeUnit.SECONDS);
-            return objectMapper.writeValueAsString("");
+            scheduler.schedule(() -> endTest(sessionId), testState.getDuration(), TimeUnit.MINUTES);
+            return testState.toJsonFromMap();
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,7 +111,7 @@ public class TestTakingRepository{
 
     public TestState loadTestState(String userId, String testId) {
         String testQuery = """
-            SELECT test_id, start_time, end_time, duration
+            SELECT test_id, test_name, description, start_time, end_time, duration
             FROM tests
             WHERE test_id = ?
         """;
@@ -120,6 +120,9 @@ public class TestTakingRepository{
         Instant startTime = ((java.sql.Timestamp) testRow.get("start_time")).toInstant();
         Instant endTime = ((java.sql.Timestamp) testRow.get("end_time")).toInstant();
         long duration = ((Number) testRow.get("duration")).longValue();
+
+        String testName = (String) testRow.get("test_name");
+        String description = (String) testRow.get("description");
 
         String questionsQuery = """
             SELECT q.question_id, q.question, q.options, q.answer_index
@@ -137,6 +140,8 @@ public class TestTakingRepository{
         return new TestState(
             userId,
             testId,
+            testName,
+            description,
             startTime,
             endTime,
             duration,
@@ -180,7 +185,7 @@ public class TestTakingRepository{
             candidateId,
             Timestamp.from(startTime),
             Timestamp.from(endTime),
-            0
+            testState.calculateScore()
         );
 
         String insertResponseSql = """

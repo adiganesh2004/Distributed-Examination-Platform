@@ -22,27 +22,37 @@ public class TestTakingHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        // System.out.println("This connection established");
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        if (message == null || message.getPayload() == null|| message.getPayload().isBlank()){
+            System.err.println("⚠️ Received null or empty WebSocket message from: " + session.getId());
+            return;
+        }
+
         TestAction testAction = convertToTestAction(message);
         if (testAction == null) {
             session.sendMessage(new TextMessage("{\"error\":\"Invalid request\"}"));
             return;
         }
         if ("start_test".equalsIgnoreCase(testAction.getType())) {
+            System.out.println("New test received");
             String response = repository.startTest(session.getId(), testAction);
             session.sendMessage(new TextMessage(response));
         }else if("change_question".equalsIgnoreCase(testAction.getType())){
+            System.out.println("change question received");
             String response = repository.changeQuestion(session.getId(), testAction);
-            session.sendMessage(new TextMessage(response));
+            // session.sendMessage(new TextMessage(response));
         }else if("change_answer".equalsIgnoreCase(testAction.getType())){
+            System.out.println("change answer received");
             String response = repository.changeAnswer(session.getId(), testAction);
-            session.sendMessage(new TextMessage(response));
+            // session.sendMessage(new TextMessage(response));
         }else if("end_test".equalsIgnoreCase(testAction.getType())){
+            System.out.println("end test received");
             String response = repository.endTest(session.getId());
-            session.sendMessage(new TextMessage(response));
+            // session.sendMessage(new TextMessage(response));
         }else {
             session.sendMessage(new TextMessage("{\"error\":\"Unknown action type\"}"));
         }

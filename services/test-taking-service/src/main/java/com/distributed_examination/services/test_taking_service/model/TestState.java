@@ -6,10 +6,17 @@ import com.distributed_examination.common.model.QuestionResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class TestState{
     private String userId;
     private String testId;
+    private String testName;
+    private String description;
     private Instant startTime;
     private Instant endTime;
     private Instant sessionStartTime;
@@ -17,17 +24,20 @@ public class TestState{
     private long duration;
     private String prevQuestionId;
 
-    private Map<String,Question> questions;
-    private Map<String,QuestionResponse> questionsResponse;
+    private Map<String, Question> questions;
+    private Map<String, QuestionResponse> questionsResponse;
 
-    public TestState(String userId, String testId, Instant startTime, Instant endTime, long duration, List<Question> questionList) {
+    public TestState(String userId, String testId, String testName, String description,
+                     Instant startTime, Instant endTime, long duration, List<Question> questionList) {
         this.userId = userId;
         this.testId = testId;
+        this.testName = testName;
+        this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = duration;
         this.sessionStartTime = Instant.now();
-        this.sessionEndTime = sessionStartTime.plusSeconds(duration);
+        this.sessionEndTime = sessionStartTime.plusSeconds(duration*60);
         this.prevQuestionId = null;
         this.questions = new HashMap<>();
         this.questionsResponse = new HashMap<>();
@@ -37,6 +47,54 @@ public class TestState{
             this.questionsResponse.put(q.getId(), new QuestionResponse(q.getId()));
         }
     }
+
+    public int calculateScore(){
+        int score = 0;
+
+        for (Map.Entry<String, Question> entry : questions.entrySet()) {
+            String qId = entry.getKey();
+            Question question = entry.getValue();
+            QuestionResponse response = questionsResponse.get(qId);
+
+            if (question != null && response != null) {
+                Integer chosen = response.getChosenOption();
+                Integer correct = question.getAnswerIndex(); // assumes such a getter exists
+
+                if (chosen != null && correct != null && chosen.equals(correct)) {
+                    score++;
+                    response.setCorrectAnswer(true);
+                }
+            }
+        }
+
+        return score;
+    }
+
+    public String toJsonFromMap() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<Map<String, Object>> sanitizedQuestions = new ArrayList<>();
+    
+            for (Question q : questions.values()) {
+                Map<String, Object> qMap = new HashMap<>();
+                qMap.put("id", q.getId());
+                qMap.put("question", q.getQuestion());
+                qMap.put("options", q.getOptions());
+                sanitizedQuestions.add(qMap);
+            }
+    
+            Map<String, Object> wrapper = new HashMap<>();
+            wrapper.put("testName", testName);
+            wrapper.put("description", description);
+            wrapper.put("duration", duration);
+            wrapper.put("questions", sanitizedQuestions);
+    
+            return mapper.writeValueAsString(wrapper);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to serialize questions map to JSON", e);
+        }
+    }
+    
 
     public boolean isWithinSessionTime() {
         Instant now = Instant.now();
