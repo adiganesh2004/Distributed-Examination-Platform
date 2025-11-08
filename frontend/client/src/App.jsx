@@ -14,6 +14,7 @@ import AddQuestions from "./pages/AddQuestions.jsx"
 import CreateTest from "./pages/CreateTest.jsx"
 import DeleteQuestion from "./pages/DeleteQuestion.jsx" 
 import TestTaking from "./pages/TestTaking.jsx"
+import StartTest from "./pages/StartTest.jsx";
 
 function App() {
   return (
@@ -70,17 +71,26 @@ function App() {
               <ProtectedRoute>
                 <TestsPage />
               </ProtectedRoute>
-    }
-  />
+            }
+          />
 
-  <Route
-    path="/testtake/:testId"
-    element={
-      <ProtectedRoute>
-        <TestTaking />
-      </ProtectedRoute>
-    }
-  />
+          <Route
+            path="/testtake/:testId"
+            element={
+              <ProtectedRoute>
+                <TestTaking />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/starttest/:testId"
+            element={
+              <ProtectedRoute>
+                <StartTest />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </div>

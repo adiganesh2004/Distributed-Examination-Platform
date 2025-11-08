@@ -10,7 +10,7 @@ const TestsPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token"); // assuming auth stores JWT
+    const token = localStorage.getItem("token");
     if (!token) {
       setError("Unauthorized. Please log in.");
       setLoading(false);
@@ -46,7 +46,7 @@ const TestsPage = () => {
             <li
               key={t.id}
               className="p-4 bg-white shadow-md rounded-xl hover:bg-gray-100 cursor-pointer transition"
-              onClick={() => navigate(`/testtake/${t.id}`)}
+              onClick={() => navigate(`/starttest/${t.id}`)}
             >
               <h2 className="text-lg font-medium">{t.title || "Untitled Test"}</h2>
               <p className="text-gray-600">{t.description || "No description provided."}</p>
