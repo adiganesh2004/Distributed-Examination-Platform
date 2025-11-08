@@ -65,7 +65,8 @@ public class TestTakingRepository{
             TestState testState = testStates.get(sessionId);
             testState.UpdateQuestion(testAction.getNextQuestionId());
     
-            return null;
+            return String.format("{\"status\":\"success\",\"nextQuestionId\":\"%s\"}", 
+                             testAction.getNextQuestionId());
     
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,7 +82,8 @@ public class TestTakingRepository{
             TestState testState = testStates.get(sessionId);
             testState.ChangeAnswer(testAction.getCurrentQuestionId(),testAction.getChosenOption());
     
-            return null;
+            return String.format("{\"status\":\"success\",\"chosenOption\":%d}", 
+                             testAction.getChosenOption());
     
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,7 +103,7 @@ public class TestTakingRepository{
 
             testStates.remove(sessionId);
 
-            return null;
+            return "{\"status\":\"success\",\"message\":\"Test submitted successfully\"}";
     
         } catch (Exception e) {
             e.printStackTrace();
