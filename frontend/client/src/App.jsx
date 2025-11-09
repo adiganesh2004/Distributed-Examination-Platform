@@ -17,6 +17,7 @@ import TestTaking from "./pages/TestTaking.jsx"
 import ResultsPage from "./pages/ResultsPage.jsx" 
 import PerformancePage from "./pages/PerformancePage.jsx";
 import AdminAnalyticsDashboard from "./pages/AdminAnalyticsDashboard.jsx";
+import StartTest from "./pages/StartTest.jsx";
 
 function App() {
   return (
@@ -73,8 +74,8 @@ function App() {
               <ProtectedRoute>
                 <TestsPage />
               </ProtectedRoute>
-    }
-  />
+            }
+          />
 
               <Route
                 path="/testtake/:testId"
@@ -108,6 +109,23 @@ function App() {
                   </ProtectedAdminRoute>
                 }
               />
+          <Route
+            path="/testtake/:testId"
+            element={
+              <ProtectedRoute>
+                <TestTaking />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/starttest/:testId"
+            element={
+              <ProtectedRoute>
+                <StartTest />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </div>

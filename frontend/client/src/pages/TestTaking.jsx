@@ -4,6 +4,8 @@ import { useAuth } from "../hooks/useAuth.jsx";
 
 const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
 const BACKEND_WS_URL = `ws://localhost:${BACKEND_PORT}/testtake/`;
+const BACKEND_WS_URL2 = `ws://localhost:${BACKEND_PORT}/proct/candidate/`;
+const BACKEND_URL = `${import.meta.env.VITE_API_URL}`;
 
 const TestTaking = () => {
   const { testId } = useParams();
@@ -22,13 +24,97 @@ const TestTaking = () => {
   const [isWaiting, setIsWaiting] = useState(false);
   const questionsRef = useRef(questions);
 
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+
   const wsRef = useRef(null);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     questionsRef.current = questions;
   }, [questions]);
+
+  useEffect(() => {
+    const allowed = sessionStorage.getItem("cameraAllowed");
+    if (!allowed) {
+      navigate("/home");
+      return;
+    }
+
+    let stream = null;
+    let intervalId = null;
+
+    async function startCamera() {
+      try {
+        console.log("Camera starting")
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (videoRef.current) videoRef.current.srcObject = stream;
+
+        // Start the interval *after* the stream is ready
+        intervalId = setInterval(() => captureAndSend(stream), 5000);
+      } catch (err) {
+        console.error("Camera start error", err);
+        navigate("/home");
+      }
+    }
+
+    startCamera();
+
+    // Cleanup when component unmounts
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      if (stream) stream.getTracks().forEach(t => t.stop());
+    };
+  }, [navigate, testId]);
+
+  async function captureAndSend() {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
   
+    const ctx = canvas.getContext("2d");
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  
+    // Convert to base64 string
+    const imageBase64 = canvas.toDataURL("image/jpeg");
+    const token = localStorage.getItem("token");
+  
+    // Construct message object
+    const data = {
+      testId,
+      token,
+      imageBase64,
+    };
+  
+    // Send over WebSocket
+    sendOverWS(data);
+  }
+
+  function sendOverWS(data) {
+    const ws = new WebSocket(BACKEND_WS_URL2);
+  
+    ws.onopen = () => {
+      console.log("Connected to WS ✅");
+  
+      // send JSON data
+      console.log(data)
+      ws.send(JSON.stringify(data));
+  
+      // close after sending
+      ws.close();
+    };
+  
+    ws.onerror = (err) => {
+      console.error("WebSocket error:", err);
+    };
+  
+    ws.onclose = () => {
+      console.log("WS closed");
+    };
+  }
+
   // Connect WebSocket
   useEffect(() => {
     if (!user || !user.token) return;
@@ -53,16 +139,16 @@ const TestTaking = () => {
       try {
         const data = JSON.parse(event.data);
         setIsWaiting(false);
-    
+
         if (data.error) {
           alert(`Error: ${data.error}`);
           return;
         }
-    
+
         // Change question confirmation
+
         if (data.nextQuestionId) {
           const nextIndex = questionsRef.current.findIndex(q => q.id === data.nextQuestionId);
-          console.log(nextIndex, questions, data.nextQuestionId)
           if (nextIndex !== -1) {
             setCurrentIndex(nextIndex);
             setCurrentQuestion(questionsRef.current[nextIndex]);
@@ -74,11 +160,12 @@ const TestTaking = () => {
         }
     
         // Change answer confirmation
+
         if (data.chosenOption !== undefined) {
           setChosenOption(data.chosenOption);
           return;
         }
-    
+
         // End test confirmation
         if (data.status === "success" && data.message) {
           alert(`${data.message}`);
@@ -87,6 +174,7 @@ const TestTaking = () => {
         }
     
         // Test initialization
+
         if (data.questions && Array.isArray(data.questions)) {
           const newQuestions = data.questions;
           setQuestions(() => {
@@ -100,17 +188,17 @@ const TestTaking = () => {
           setQuestions(newQuestions);
           setCurrentIndex(0);
           setCurrentQuestion(data.questions[0]);
-          console.log(questions,data.questions, newQuestions)
           return;
         }
     
         console.log("Unhandled message:", data);
+
       } catch (err) {
         console.error("Error parsing message:", err);
         setIsWaiting(false); // ensure UI isn’t stuck
       }
     };
-    
+
 
     ws.onerror = (error) => console.error("WebSocket error:", error);
     ws.onclose = () => {
@@ -151,7 +239,7 @@ const TestTaking = () => {
   const handleAnswerChange = (optionIndex) => {
     if (!connected || !wsRef.current || !currentQuestion || isWaiting) return;
     setIsWaiting(true);
-  
+
     const message = {
       token,
       type: "change_answer",
@@ -159,17 +247,17 @@ const TestTaking = () => {
       currentQuestionId: currentQuestion.id,
       chosenOption: optionIndex,
     };
-  
+
     wsRef.current.send(JSON.stringify(message));
   };
-  
+
 
   const handleNextQuestion = () => {
     if (!connected || !wsRef.current || questions.length === 0 || isWaiting) return;
     setIsWaiting(true);
-  
+
     const nextIndex = (currentIndex + 1) % questions.length;
-  
+
     const message = {
       token,
       type: "change_question",
@@ -177,17 +265,17 @@ const TestTaking = () => {
       currentQuestionId: questions[currentIndex].id,
       nextQuestionId: questions[nextIndex].id,
     };
-  
+
     wsRef.current.send(JSON.stringify(message));
   };
-  
+
 
   const handlePrevQuestion = () => {
     if (!connected || !wsRef.current || questions.length === 0 || isWaiting) return;
     setIsWaiting(true);
-  
+
     const prevIndex = (currentIndex - 1 + questions.length) % questions.length;
-  
+
     const message = {
       token,
       type: "change_question",
@@ -195,27 +283,29 @@ const TestTaking = () => {
       currentQuestionId: questions[currentIndex].id,
       nextQuestionId: questions[prevIndex].id,
     };
-  
+
     wsRef.current.send(JSON.stringify(message));
   };
-  
+
 
   const handleSubmitTest = () => {
     if (!connected || !wsRef.current || isWaiting) return;
     setIsWaiting(true);
-  
+
     const message = {
       token,
       type: "end_test",
       testId,
     };
-  
+
     wsRef.current.send(JSON.stringify(message));
   };
-  
+
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
+      <video ref={videoRef} autoPlay playsInline className="w-64 h-48 border" />
+      <canvas ref={canvasRef} style={{ display: "none" }} />
       {!connected ? (
         <p>Connecting to test server...</p>
       ) : (
@@ -261,9 +351,8 @@ const TestTaking = () => {
                 <button
                   onClick={handlePrevQuestion}
                   disabled={isWaiting}
-                  className={`px-4 py-2 rounded text-white ${
-                    isWaiting ? "bg-gray-300 cursor-not-allowed" : "bg-gray-500"
-                  }`}
+                  className={`px-4 py-2 rounded text-white ${isWaiting ? "bg-gray-300 cursor-not-allowed" : "bg-gray-500"
+                    }`}
                 >
                   Previous
                 </button>
@@ -271,9 +360,8 @@ const TestTaking = () => {
                 <button
                   onClick={handleNextQuestion}
                   disabled={isWaiting}
-                  className={`px-4 py-2 rounded text-white ${
-                    isWaiting ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600"
-                  }`}
+                  className={`px-4 py-2 rounded text-white ${isWaiting ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600"
+                    }`}
                 >
                   Next
                 </button>
@@ -282,9 +370,8 @@ const TestTaking = () => {
               <button
                 onClick={handleSubmitTest}
                 disabled={isWaiting}
-                className={`mt-6 w-full px-4 py-2 rounded text-white ${
-                  isWaiting ? "bg-green-300 cursor-not-allowed" : "bg-green-600"
-                }`}
+                className={`mt-6 w-full px-4 py-2 rounded text-white ${isWaiting ? "bg-green-300 cursor-not-allowed" : "bg-green-600"
+                  }`}
               >
                 Submit Test
               </button>

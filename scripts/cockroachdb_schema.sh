@@ -69,4 +69,15 @@ CREATE TABLE IF NOT EXISTS CANDIDATE_RESPONSES (
     PRIMARY KEY (TEST_ID, CANDIDATE_ID, QUESTION_ID)
 );
 
+CREATE TABLE IF NOT EXISTS candidate_tests_proctoring (
+    test_id UUID REFERENCES tests(test_id) ON DELETE CASCADE,
+    candidate_id UUID NOT NULL REFERENCES candidate(candidate_id) ON DELETE CASCADE,
+    number_images INT DEFAULT 0,
+    number_red_flags INT DEFAULT 0,
+    number_yellow_flags INT DEFAULT 0,
+    number_green_flags INT DEFAULT 0,
+    PRIMARY KEY (test_id, candidate_id),
+    CHECK ((number_green_flags + number_yellow_flags + number_red_flags) = number_images)
+);
+
 EOF
