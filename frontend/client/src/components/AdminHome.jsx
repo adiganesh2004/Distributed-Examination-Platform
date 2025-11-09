@@ -46,7 +46,7 @@ const AdminHome = () => {
         </Card>
 
         {/* Analytics */}
-        <Card className="p-6 hover:shadow-lg transition-shadow">
+        <Card className="p-6 hover:shadow-lg transition-shadow" onClick={() => navigate("/admin/analytics")}>
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-purple-100 rounded-lg">
               <BarChart3 className="w-6 h-6 text-purple-600" />

@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.distributed_examination.services.results_service.service.ResultService;
 import com.distributed_examination.common.model.CustomUserDetails;
-import com.distributed_examination.services.results_service.model.*;
+import com.distributed_examination.services.results_service.model.CandidateInsight;
+import com.distributed_examination.services.results_service.model.CandidatePerformance;
+import com.distributed_examination.services.results_service.model.CandidateTestInfo;
+import com.distributed_examination.services.results_service.model.QuestionInsight;
+import com.distributed_examination.services.results_service.service.ResultService;
 
 @RestController
 @RequestMapping("/results")
@@ -47,4 +50,12 @@ public class ResultController {
     ) {
         return service.fetchCandidatePerformance(testId, user.getId());
     }
+
+    @GetMapping("/candidate/tests")
+    public List<CandidateTestInfo> testsGiven(
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
+        return service.fetchTestsGivenByCandidate(user.getId());
+    }
+
 }
