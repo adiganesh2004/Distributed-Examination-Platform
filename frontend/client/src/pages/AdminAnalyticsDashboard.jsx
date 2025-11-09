@@ -98,14 +98,16 @@ const AdminAnalyticsDashboard = () => {
           </Card>
 
           {/* Leaderboard */}
-          <Card className="p-6 shadow-lg bg-white border border-gray-200 rounded-xl">
+          <Card className="p-6 shadow-lg bg-white border border-gray-200 rounded-xl h-96 overflow-auto">
             <div className="flex items-center gap-2 mb-4">
               <Trophy className="text-yellow-500 w-6 h-6" />
               <h3 className="text-xl font-semibold text-gray-900">Leaderboard</h3>
             </div>
 
             <ul className="space-y-3">
-              {leaderboard.length === 0 && <p className="text-gray-500 text-sm">No data</p>}
+              {leaderboard.length === 0 && (
+                <p className="text-gray-500 text-sm">No data</p>
+              )}
 
               {leaderboard.map((c, idx) => (
                 <li
