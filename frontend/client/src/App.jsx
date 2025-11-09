@@ -17,6 +17,7 @@ import TestTaking from "./pages/TestTaking.jsx"
 import ResultsPage from "./pages/ResultsPage.jsx" 
 import PerformancePage from "./pages/PerformancePage.jsx";
 import AdminAnalyticsDashboard from "./pages/AdminAnalyticsDashboard.jsx";
+import AdminTestsList from "./pages/AdminTestsLists.jsx";
 import StartTest from "./pages/StartTest.jsx";
 
 function App() {
@@ -102,7 +103,15 @@ function App() {
               }
               />
               <Route
-                path="/admin/analytics"
+                path="/admin/tests"
+                element={
+                  <ProtectedAdminRoute>
+                    <AdminTestsList />
+                  </ProtectedAdminRoute>
+                }
+              />
+              <Route
+                path="/admin/analytics/:testId"
                 element={
                   <ProtectedAdminRoute>
                     <AdminAnalyticsDashboard />

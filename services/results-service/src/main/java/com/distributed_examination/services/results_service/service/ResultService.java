@@ -38,5 +38,7 @@ public class ResultService {
     public List<CandidateTestInfo> fetchTestsGivenByCandidate(String candidateId) {
         return repository.testsGivenByCandidate(candidateId);
     }
-
+    public List<CandidateTestInfo> fetchTestsCreatedByAdmin(String adminId) {
+        return repository.testsCreatedByAdmin(adminId);
+    }
 }

@@ -41,6 +41,12 @@ public class ResultController {
     public List<QuestionInsight> longest(@PathVariable String testId) {
         return service.fetchLongestTimeQuestions(testId);
     }
+    @GetMapping("/admin/tests")
+    public List<CandidateTestInfo> testsCreated(
+            @AuthenticationPrincipal CustomUserDetails user
+    ) {
+        return service.fetchTestsCreatedByAdmin(user.getId());
+    }
 
     // ----- CANDIDATE INSIGHTS -----
     @GetMapping("/candidate/{testId}/performance")
@@ -57,5 +63,4 @@ public class ResultController {
     ) {
         return service.fetchTestsGivenByCandidate(user.getId());
     }
-
 }

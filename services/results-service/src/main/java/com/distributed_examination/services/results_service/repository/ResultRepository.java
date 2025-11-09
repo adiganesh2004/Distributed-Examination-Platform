@@ -127,4 +127,21 @@ public class ResultRepository {
         return info;
     });
 }
+	public List<CandidateTestInfo> testsCreatedByAdmin(String adminId) {
+		String sql = """
+				SELECT 
+                test_id,
+                test_name
+            FROM tests
+            WHERE admin_id = ?
+            ORDER BY start_time DESC
+				""";
+
+		return jdbcTemplate.query(sql, new Object[]{adminId}, (rs, rowNum) -> {
+			CandidateTestInfo info = new CandidateTestInfo();
+			info.setTestId(rs.getString("test_id"));
+			info.setTestName(rs.getString("test_name"));
+			return info;
+		});
+	}
 }
