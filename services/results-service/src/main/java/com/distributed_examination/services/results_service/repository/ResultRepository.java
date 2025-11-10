@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.distributed_examination.services.results_service.model.*;
+import com.distributed_examination.services.results_service.model.CandidateInsight;
+import com.distributed_examination.services.results_service.model.CandidatePerformance;
+import com.distributed_examination.services.results_service.model.CandidateTestInfo;
+import com.distributed_examination.services.results_service.model.QuestionInsight;
 
 @Repository
 public class ResultRepository {
@@ -100,6 +103,45 @@ public class ResultRepository {
 			cp.setTotalQuestions(rs.getInt("total_questions"));
 			cp.setCorrectAnswers(rs.getInt("correct_answers"));
 			return cp;
+		});
+	}
+	public List<CandidateTestInfo> testsGivenByCandidate(String candidateId) {
+    String sql = """
+            SELECT 
+        ct.test_id,
+        t.test_name AS test_name,
+        ct.score,
+        ct.start_time,
+        ct.end_time
+    FROM candidate_tests ct
+    JOIN tests t ON ct.test_id = t.test_id
+    WHERE ct.candidate_id = ?
+    ORDER BY ct.start_time DESC
+        """;
+
+    return jdbcTemplate.query(sql, new Object[]{candidateId}, (rs, rowNum) -> {
+        CandidateTestInfo info = new CandidateTestInfo();
+        info.setTestId(rs.getString("test_id"));
+        info.setTestName(rs.getString("test_name"));
+        info.setScore(rs.getInt("score"));
+        return info;
+    });
+}
+	public List<CandidateTestInfo> testsCreatedByAdmin(String adminId) {
+		String sql = """
+				SELECT 
+                test_id,
+                test_name
+            FROM tests
+            WHERE admin_id = ?
+            ORDER BY start_time DESC
+				""";
+
+		return jdbcTemplate.query(sql, new Object[]{adminId}, (rs, rowNum) -> {
+			CandidateTestInfo info = new CandidateTestInfo();
+			info.setTestId(rs.getString("test_id"));
+			info.setTestName(rs.getString("test_name"));
+			return info;
 		});
 	}
 }

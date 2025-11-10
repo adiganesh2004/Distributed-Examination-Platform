@@ -32,7 +32,10 @@ const CandidateHome = () => {
         </Card>
 
         {/* My Results Card */}
-        <Card className="p-6 hover:shadow-lg transition-shadow">
+        <Card
+          onClick={() => navigate("/results")}
+          className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
+        >
           <div className="flex items-center space-x-4">
             <div className="p-3 bg-green-100 rounded-lg">
               <BarChart3 className="w-6 h-6 text-green-600" />

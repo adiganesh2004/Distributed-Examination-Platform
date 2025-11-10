@@ -109,7 +109,7 @@ const TestTaking = () => {
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log("✅ WebSocket connected");
+      console.log("WebSocket connected");
       setConnected(true);
 
       const startMessage = {
@@ -121,17 +121,18 @@ const TestTaking = () => {
     };
 
     ws.onmessage = (event) => {
-      console.log("📩 Message from server:", event.data);
+      console.log("Message from server:", event.data);
       try {
         const data = JSON.parse(event.data);
         setIsWaiting(false);
 
         if (data.error) {
-          alert(`❌ Error: ${data.error}`);
+          alert(`Error: ${data.error}`);
           return;
         }
 
-        // ✅ Change question confirmation
+        // Change question confirmation
+
         if (data.nextQuestionId) {
           const nextIndex = questionsRef.current.findIndex(q => q.id === data.nextQuestionId);
           if (nextIndex !== -1) {
@@ -143,21 +144,23 @@ const TestTaking = () => {
           }
           return;
         }
+    
+        // Change answer confirmation
 
-        // ✅ Change answer confirmation
         if (data.chosenOption !== undefined) {
           setChosenOption(data.chosenOption);
           return;
         }
 
-        // ✅ End test confirmation
+        // End test confirmation
         if (data.status === "success" && data.message) {
-          alert(`✅ ${data.message}`);
+          alert(`${data.message}`);
           navigate("/home");
           return;
         }
+    
+        // Test initialization
 
-        // ✅ Test initialization
         if (data.questions && Array.isArray(data.questions)) {
           const newQuestions = data.questions;
           setQuestions(() => {
@@ -173,18 +176,19 @@ const TestTaking = () => {
           setCurrentQuestion(data.questions[0]);
           return;
         }
+    
+        console.log("Unhandled message:", data);
 
-        console.log("⚙️ Unhandled message:", data);
       } catch (err) {
-        console.error("❌ Error parsing message:", err);
+        console.error("Error parsing message:", err);
         setIsWaiting(false); // ensure UI isn’t stuck
       }
     };
 
 
-    ws.onerror = (error) => console.error("⚠️ WebSocket error:", error);
+    ws.onerror = (error) => console.error("WebSocket error:", error);
     ws.onclose = () => {
-      console.log("🔒 WebSocket closed");
+      console.log("WebSocket closed");
       setConnected(false);
     };
 
@@ -200,7 +204,7 @@ const TestTaking = () => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          alert("⏰ Time's up!");
+          alert("Time's up!");
           handleSubmitTest();
           return 0;
         }
