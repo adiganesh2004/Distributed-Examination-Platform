@@ -13,7 +13,7 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/testtake/**").permitAll()   // allow websocket path
+                .requestMatchers("/**").permitAll()   // allow websocket path
                 .anyRequest().authenticated()                  // secure everything else
             );
 

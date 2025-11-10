@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth.jsx";
 
 const BACKEND_PORT = import.meta.env.VITE_BACKEND_PORT;
 const BACKEND_WS_URL = `ws://localhost:${BACKEND_PORT}/testtake/`;
-const BACKEND_WS_URL2 = `ws://localhost:${BACKEND_PORT}/proct/candidate/`;
+const BACKEND_WS_URL2 = `ws://localhost:${BACKEND_PORT}/proctorer/`;
 const BACKEND_URL = `${import.meta.env.VITE_API_URL}`;
 
 const TestTaking = () => {
@@ -51,7 +51,7 @@ const TestTaking = () => {
         if (videoRef.current) videoRef.current.srcObject = stream;
 
         // Start the interval *after* the stream is ready
-        intervalId = setInterval(() => captureAndSend(stream), 5000);
+        intervalId = setInterval(() => captureAndSend(stream), 10000);
       } catch (err) {
         console.error("Camera start error", err);
         navigate("/home");
@@ -73,46 +73,32 @@ const TestTaking = () => {
     if (!video || !canvas) return;
   
     const ctx = canvas.getContext("2d");
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
+    canvas.width = 100; // reduce resolution
+    canvas.height = 100;
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   
-    // Convert to base64 string
-    const imageBase64 = canvas.toDataURL("image/jpeg");
-    const token = localStorage.getItem("token");
+    const imageBase64 = canvas.toDataURL("image/jpeg", 0.4);
   
-    // Construct message object
     const data = {
+      type: "proctor",
       testId,
-      token,
+      token: localStorage.getItem("token"),
       imageBase64,
     };
   
-    // Send over WebSocket
     sendOverWS(data);
   }
 
   function sendOverWS(data) {
-    const ws = new WebSocket(BACKEND_WS_URL2);
-  
-    ws.onopen = () => {
-      console.log("Connected to WS ✅");
-  
-      // send JSON data
-      console.log(data)
-      ws.send(JSON.stringify(data));
-  
-      // close after sending
-      ws.close();
-    };
-  
-    ws.onerror = (err) => {
-      console.error("WebSocket error:", err);
-    };
-  
-    ws.onclose = () => {
-      console.log("WS closed");
-    };
+    try {
+      if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+        console.warn("⚠️ WS not ready, skipping send");
+        return;
+      }
+      wsRef.current.send(JSON.stringify(data));
+    } catch (error) {
+      console.error("❌ sendOverWS error:", error);
+    }
   }
 
   // Connect WebSocket
@@ -279,7 +265,7 @@ const TestTaking = () => {
       currentQuestionId: questions[currentIndex].id,
       nextQuestionId: questions[prevIndex].id,
     };
-
+    console.log(message)
     wsRef.current.send(JSON.stringify(message));
   };
 

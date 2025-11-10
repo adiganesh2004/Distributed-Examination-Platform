@@ -9,14 +9,18 @@ import com.distributed_examination.services.test_taking_service.repository.TestT
 import com.distributed_examination.services.test_taking_service.model.TestAction;
 import com.distributed_examination.common.jwt.JwtUtil;
 
+import com.distributed_examination.services.test_taking_service.service.ProctoringService;
+
 @Component
 public class TestTakingHandler extends TextWebSocketHandler {
 
     private final TestTakingRepository repository;
     private final JwtUtil jwtUtil;
+    private final ProctoringService service;
 
-    public TestTakingHandler(TestTakingRepository repository, JwtUtil jwtUtil) {
+    public TestTakingHandler(TestTakingRepository repository, JwtUtil jwtUtil, ProctoringService service) {
         this.repository = repository;
+        this.service = service;
         this.jwtUtil = jwtUtil;
     }
 
@@ -37,6 +41,7 @@ public class TestTakingHandler extends TextWebSocketHandler {
             session.sendMessage(new TextMessage("{\"error\":\"Invalid request\"}"));
             return;
         }
+        System.out.println(testAction.getType());
         if ("start_test".equalsIgnoreCase(testAction.getType())) {
             System.out.println("New test received");
             String response = repository.startTest(session.getId(), testAction);
@@ -53,6 +58,10 @@ public class TestTakingHandler extends TextWebSocketHandler {
             System.out.println("end test received");
             String response = repository.endTest(session.getId());
             session.sendMessage(new TextMessage(response));
+        }else if("proctor".equalsIgnoreCase(testAction.getType())){
+            System.out.println("proctor test received");
+            session.sendMessage(new TextMessage("{\"success\":\"Got the image\"}"));
+            service.processImage(testAction.toByteArray(),testAction.getTestId(),testAction.getUserId());
         }else {
             session.sendMessage(new TextMessage("{\"error\":\"Unknown action type\"}"));
         }
@@ -73,10 +82,10 @@ public class TestTakingHandler extends TextWebSocketHandler {
             String nextQuestionId = jsonNode.hasNonNull("nextQuestionId") ? jsonNode.get("nextQuestionId").asText() : null;
             String currentQuestionId = jsonNode.hasNonNull("currentQuestionId") ? jsonNode.get("currentQuestionId").asText() : null;
             int chosenOption = jsonNode.hasNonNull("chosenOption") ? jsonNode.get("chosenOption").asInt() : -1;
-    
+            String imageBase64 = jsonNode.hasNonNull("imageBase64") ? jsonNode.get("imageBase64").asText() : null;
             String userId = jwtUtil.extractId(token);
     
-            return new TestAction(token, userId, type, testId, nextQuestionId, currentQuestionId, chosenOption);
+            return new TestAction(token, userId, type, testId, nextQuestionId, currentQuestionId, chosenOption, imageBase64);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
