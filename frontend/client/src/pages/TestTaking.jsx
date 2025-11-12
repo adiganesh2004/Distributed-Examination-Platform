@@ -19,6 +19,7 @@ const TestTaking = () => {
   const [chosenOption, setChosenOption] = useState(null);
   const [testName, setTestName] = useState("");
   const [description, setDescription] = useState("");
+  const [selectedAnswers, setSelectedAnswers] = useState({});
   const [duration, setDuration] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const [isWaiting, setIsWaiting] = useState(false);
@@ -240,6 +241,11 @@ const TestTaking = () => {
     if (!connected || !wsRef.current || !currentQuestion || isWaiting) return;
     setIsWaiting(true);
 
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [currentQuestion.id]: optionIndex,
+    }));
+
     const message = {
       token,
       type: "change_answer",
@@ -248,8 +254,8 @@ const TestTaking = () => {
       chosenOption: optionIndex,
     };
 
-    wsRef.current.send(JSON.stringify(message));
-  };
+  wsRef.current.send(JSON.stringify(message));
+};
 
 
   const handleNextQuestion = () => {
@@ -257,17 +263,22 @@ const TestTaking = () => {
     setIsWaiting(true);
 
     const nextIndex = (currentIndex + 1) % questions.length;
+    const nextQuestion = questions[nextIndex];
 
     const message = {
       token,
       type: "change_question",
       testId,
       currentQuestionId: questions[currentIndex].id,
-      nextQuestionId: questions[nextIndex].id,
+      nextQuestionId: nextQuestion.id,
     };
 
     wsRef.current.send(JSON.stringify(message));
-  };
+
+    setCurrentIndex(nextIndex);
+    setCurrentQuestion(nextQuestion);
+    setChosenOption(selectedAnswers[nextQuestion.id] ?? null);
+};
 
 
   const handlePrevQuestion = () => {
@@ -275,18 +286,22 @@ const TestTaking = () => {
     setIsWaiting(true);
 
     const prevIndex = (currentIndex - 1 + questions.length) % questions.length;
+    const prevQuestion = questions[prevIndex];
 
     const message = {
       token,
       type: "change_question",
       testId,
       currentQuestionId: questions[currentIndex].id,
-      nextQuestionId: questions[prevIndex].id,
+      nextQuestionId: prevQuestion.id,
     };
 
     wsRef.current.send(JSON.stringify(message));
-  };
 
+    setCurrentIndex(prevIndex);
+    setCurrentQuestion(prevQuestion);
+    setChosenOption(selectedAnswers[prevQuestion.id] ?? null);
+};
 
   const handleSubmitTest = () => {
     if (!connected || !wsRef.current || isWaiting) return;
