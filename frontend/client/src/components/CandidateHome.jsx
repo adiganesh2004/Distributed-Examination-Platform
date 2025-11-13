@@ -47,18 +47,6 @@ const CandidateHome = () => {
           </div>
         </Card>
 
-        {/* Profile Card */}
-        <Card className="p-6 hover:shadow-lg transition-shadow">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-orange-100 rounded-lg">
-              <User className="w-6 h-6 text-orange-600" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Profile</h3>
-              <p className="text-gray-600">Manage your account</p>
-            </div>
-          </div>
-        </Card>
       </div>
     </>
   );
