@@ -1,4 +1,5 @@
-package com.distributed_examination.services.question_service;
+package com.distributed_examination.services.proctoring_service;
+
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

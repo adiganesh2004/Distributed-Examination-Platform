@@ -338,7 +338,7 @@ const TestTaking = () => {
                         type="radio"
                         name="option"
                         disabled={isWaiting}
-                        checked={chosenOption === idx}
+                        checked={selectedAnswers[currentQuestion.id] === idx}
                         onChange={() => handleAnswerChange(idx)}
                         className="mr-2"
                       />

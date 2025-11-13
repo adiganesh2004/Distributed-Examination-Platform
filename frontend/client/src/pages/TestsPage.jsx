@@ -26,6 +26,7 @@ const TestsPage = () => {
         if (!res.ok) throw new Error("Failed to fetch tests");
         const data = await res.json();
         setTests(data);
+        console.log(data)
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -48,7 +49,7 @@ const TestsPage = () => {
               className="p-4 bg-white shadow-md rounded-xl hover:bg-gray-100 cursor-pointer transition"
               onClick={() => navigate(`/starttest/${t.id}`)}
             >
-              <h2 className="text-lg font-medium">{t.title || "Untitled Test"}</h2>
+              <h2 className="text-lg font-medium">{t.name || "Untitled Test"}</h2>
               <p className="text-gray-600">{t.description || "No description provided."}</p>
             </li>
           ))}
